@@ -1,0 +1,92 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'D:/pythonProjects/fuzzyProject/design/rule.ui'
+#
+# Created by: PyQt5 UI code generator 5.6
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(820, 600)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.rule_frame = QtWidgets.QFrame(self.centralwidget)
+        self.rule_frame.setObjectName("rule_frame")
+        self.rule_layout = QtWidgets.QVBoxLayout(self.rule_frame)
+        self.rule_layout.setObjectName("rule_layout")
+        self.rule_list = QtWidgets.QListWidget(self.rule_frame)
+        self.rule_list.setObjectName("rule_list")
+        self.rule_layout.addWidget(self.rule_list)
+        self.verticalLayout.addWidget(self.rule_frame)
+        self.mf_func_list_frame = QtWidgets.QFrame(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.mf_func_list_frame.sizePolicy().hasHeightForWidth())
+        self.mf_func_list_frame.setSizePolicy(sizePolicy)
+        self.mf_func_list_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.mf_func_list_frame.setObjectName("mf_func_list_frame")
+        self.mf_func_list_layout = QtWidgets.QHBoxLayout(self.mf_func_list_frame)
+        self.mf_func_list_layout.setObjectName("mf_func_list_layout")
+        self.input_mf_frame = QtWidgets.QFrame(self.mf_func_list_frame)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.input_mf_frame.sizePolicy().hasHeightForWidth())
+        self.input_mf_frame.setSizePolicy(sizePolicy)
+        self.input_mf_frame.setObjectName("input_mf_frame")
+        self.input_mf_frame_layout = QtWidgets.QHBoxLayout(self.input_mf_frame)
+        self.input_mf_frame_layout.setObjectName("input_mf_frame_layout")
+        self.mf_func_list_layout.addWidget(self.input_mf_frame)
+        spacerItem = QtWidgets.QSpacerItem(200, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        self.mf_func_list_layout.addItem(spacerItem)
+        self.output_mf_frame = QtWidgets.QFrame(self.mf_func_list_frame)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.output_mf_frame.sizePolicy().hasHeightForWidth())
+        self.output_mf_frame.setSizePolicy(sizePolicy)
+        self.output_mf_frame.setObjectName("output_mf_frame")
+        self.output_mf_frame_layout = QtWidgets.QHBoxLayout(self.output_mf_frame)
+        self.output_mf_frame_layout.setObjectName("output_mf_frame_layout")
+        self.mf_func_list_layout.addWidget(self.output_mf_frame)
+        self.verticalLayout.addWidget(self.mf_func_list_frame)
+        self.horizontalFrame = QtWidgets.QFrame(self.centralwidget)
+        self.horizontalFrame.setObjectName("horizontalFrame")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.horizontalFrame)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.add_rule_button = QtWidgets.QPushButton(self.horizontalFrame)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.add_rule_button.sizePolicy().hasHeightForWidth())
+        self.add_rule_button.setSizePolicy(sizePolicy)
+        self.add_rule_button.setObjectName("add_rule_button")
+        self.horizontalLayout_2.addWidget(self.add_rule_button)
+        self.verticalLayout.addWidget(self.horizontalFrame)
+        self.verticalLayout_2.addLayout(self.verticalLayout)
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 820, 21))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.add_rule_button.setText(_translate("MainWindow", "Add Rule"))
+

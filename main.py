@@ -1,79 +1,269 @@
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
 import numpy as np
 import skfuzzy as fuzz
 import skfuzzy.membership as mf
 import matplotlib.pyplot as plt
-
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import variable
-
 from design.design_python import Ui_MainWindow as MainWindow
-from design.input_python import Ui_MainWindow as InputWindow
+from skfuzzy import control as ctrl
+from input_screen import InputScreen
+from rule_screen import RuleScreen
+import sys
+import traceback
 
 
 class loadUi_example(QMainWindow):
     def __init__(self):
         super().__init__()
+
         self.input_variables = []
+        self.output_variables = []
+        self.rules = {}
         self.ui = MainWindow()
         self.ui.setupUi(self)
-        #  self.ui.inputButton.clicked.connect(self.input_button_action)
 
-        self.inp_ui = InputWindow()
-        self.inputWindow = QMainWindow()
+        self.add_input_variable()
+        self.add_output_variable()
 
-        var = variable.Variable("input")
+        self.input_w = None
+        self.rule_w = None
+        # self.inp_ui = InputWindow()
+        # self.inputWindow = QMainWindow()
 
-        var.init_range(2002, 2013)
-        plt.figure()
-        var.add_trimf_membership_function("dusuk", [2002, 2002, 2007])
-        plt.draw()
+        # self.var = variable.Variable("input", ("input" + "sd"))
+        # self.var.init_range(2002, 2013)
+        # self.var.add_trimf_membership_function("dusuk", [2002, 2002, 2007])
+        # # self.var.add_trimf_membership_function("orta", [2002, 2007, 2012])
+        # # self.var.add_trimf_membership_function("yuksek", [2007, 2012, 2012])
+        # self.var.graph.legend()
 
-        plt.figure()
-        var.add_trimf_membership_function("orta", [2002, 2007, 2012])
-        plt.draw()
-
-        var.add_trimf_membership_function("yuksek", [2007, 2012, 2012])
-
-        var.fig.legend()
-        plt.show()
-
-        # self.graph = InputGraph()
+        # self.graph = InputGraph(self.var.fig)
         self.ui.actionInput.triggered.connect(self.add_input_variable)
+        self.ui.actionOutput.triggered.connect(self.add_output_variable)
+
+        self.ui.variable_name_line.editingFinished.connect(self.update_variable)
+        self.ui.var_value.editingFinished.connect(self.set_input_value)
+
+        self.ui.rule_button.clicked.connect(self.open_rule_page)
+        self.ui.startButton.clicked.connect(self.calc_result)
 
     def add_input_variable(self):
-        self.input_variables.append("input")
         length = len(self.input_variables)
-
-        button = QPushButton(str(length))
-        sizePolicy = QSizePolicy(
-            QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding
+        var = variable.Variable("input", ("input" + str(length + 1)))
+        self.input_variables.append(var)
+        length += 1
+        button = QDoublePushButton(var.name)
+        button.setObjectName("inputButton")
+        size_policy = QSizePolicy(
+            QSizePolicy.Expanding, QSizePolicy.Expanding
         )
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(button.sizePolicy().hasHeightForWidth())
-        button.setSizePolicy(sizePolicy)
+        size_policy.setHorizontalStretch(1)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(button.sizePolicy().hasHeightForWidth())
+        button.setSizePolicy(size_policy)
+        button.setStyleSheet(
+            "#inputButton:focus {border : 2px solid green;}  #inputButton{border: 1px solid grey; border-radius:5px}")
+
+        button.clicked.connect(lambda: self.update_variable_line(var, button))
+        button.doubleClicked.connect(lambda: self.input_button_action(var, button))
+
         self.ui.gridLayout.addWidget(
             button,
             (length / 3) + 1 if length % 3 != 0 else length / 3,
             length % 3 if length % 3 != 0 else 3,
         )
-
         self.ui.gridLayout.update()
 
-    def input_button_action(self):
-        self.inp_ui.setupUi(self.inputWindow)
-        self.inputWindow.show()
+    def add_output_variable(self):
+        length = len(self.output_variables)
+        var = variable.Variable("output", ("output" + str(length + 1)), )
+        self.output_variables.append(var)
+        length += 1
+        button = QDoublePushButton(var.name)
+        button.setObjectName("outputButton")
+        size_policy = QSizePolicy(
+            QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding
+        )
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(button.sizePolicy().hasHeightForWidth())
+        button.setSizePolicy(size_policy)
+        button.setStyleSheet(
+            "#outputButton:focus {border : 2px solid green;}  #outputButton{border: 1px solid grey; border-radius:5px}")
 
-        self.inp_ui.graph_layout.addWidget(self.graph)
+        button.clicked.connect(lambda: self.update_variable_line(var, button))
+        button.doubleClicked.connect(lambda: self.input_button_action(var, button))
+        self.ui.output_layout.addWidget(button)
+        self.ui.output_layout.update()
+
+    def update_variable_line(self, var, button):
+        for i in reversed(range(self.ui.gridLayout.count())):
+            self.ui.gridLayout.itemAt(i).widget().setStyleSheet(
+                "#inputButton:focus {border : 3px solid green;}  #inputButton{border: 1px solid grey; border-radius:5px}")
+
+        for o in reversed(range(self.ui.output_layout.count())):
+            self.ui.output_layout.itemAt(o).widget().setStyleSheet(
+                "#outputButton:focus {border : 3px solid green;} #outputButton{border: 1px solid grey;border-radius:5px}")
+
+        self.ui.variable_name_line.setText(var.name)
+        self.ui.variable_type_line.setText(var.type)
+        self.ui.var_value.setText(str(var.input) if var.input is not None else "")
+
+        if var.type == "input":
+            self.ui.var_value.setDisabled(False)
+            button.setStyleSheet(
+                "#inputButton:focus {border : 3px solid green;} #inputButton{border:3px solid green;border-radius:5px}")
+        else:
+            self.ui.var_value.setDisabled(True)
+            button.setStyleSheet(
+                "#outputButton:focus {border : 3px solid green;} #outputButton{border:3px solid green;border-radius:5px}")
+
+    def update_variable(self):
+        new_variable_name = self.ui.variable_name_line.text()
+        focus_widget = self.ui.frame.focusWidget()
+        var_name = focus_widget.text()
+        contains = False
+        for i in self.input_variables:
+            if i.name == new_variable_name:
+                contains = True
+        for o in self.output_variables:
+            if o.name == new_variable_name:
+                contains = True
+
+        if not contains:
+            focus_widget.setText(self.ui.variable_name_line.text())
+
+            for input_var in self.input_variables:
+                if var_name == input_var.name:
+                    input_var.name = self.ui.variable_name_line.text()
+
+            for output_var in self.output_variables:
+                if var_name == output_var.name:
+                    output_var.name = self.ui.variable_name_line.text()
+
+    def set_input_value(self):
+        value = self.ui.var_value.text()
+        focus_widget = self.ui.frame.focusWidget()
+        var_name = focus_widget.text()
+
+        for input_var in self.input_variables:
+            if var_name == input_var.name:
+                input_var.input = int(value)
+
+    def input_button_action(self, var, button):
+        # self.inp_ui.setupUi(self.inputWindow)
+        # self.inputWindow.show()
+        self.input_w = InputScreen(self.ui, var, self.input_variables, button)
+
+        # self.inp_ui.graph_layout.addWidget(self.graph)
+        # self.inp_ui.var_name.setText(var.name)
+
+        # self.inp_ui.var_name.editingFinished.connect(self.)
+        # var.name = self.inp_ui.var_name.text()
+        # self.inp_ui.func_add_button.clicked.connect(self.add_func)
+
+    # def add_func(self):
+    #     self.var.add_trimf_membership_function("orta", [2002, 2007, 2012])
+    #     self.var.add_trimf_membership_function("yuksek", [2007, 2012, 2012])
+    #     self.inp_ui.graph_layout.removeWidget(self.graph)
+    #     self.graph = InputGraph(self.var.fig)
+    #     self.inp_ui.graph_layout.addWidget(self.graph)
+    #     self.inp_ui.graph_layout.update()
+    #     self.var.graph.legend()
+    def open_rule_page(self):
+
+        self.rule_w = RuleScreen(self.input_variables, self.output_variables, self.rules)
+
+    def calc_result(self):
+        # brake0 = np.zeros_like(self.output_variables[0].variable)
+        #
+        # out_brake = np.fmax(self.rule_w.rules["dusuk"], self.rule_w.rules["orta"], self.rule_w.rules['yuksek'])
+        # defuzzified = fuzz.defuzz(self.output_variables[0].variable, out_brake, "centroid")
+        #
+        # result = fuzz.interp_membership(self.output_variables[0].variable, out_brake, defuzzified)
+        #
+        # print(defuzzified)
+
+        tipping_ctrl = ctrl.ControlSystem(self.rules.keys())
+        tipping = ctrl.ControlSystemSimulation(tipping_ctrl)
+
+        tipping.input[self.input_variables[0].name] = self.input_variables[0].input
+        tipping.input[self.input_variables[1].name] = self.input_variables[1].input
+
+        # Crunch the numbers
+        tipping.compute()
+
+        print(tipping.output[self.output_variables[0].name])
 
 
-# class InputGraph(FigureCanvas):
+class InputGraph(FigureCanvas):
 
-#     def __init__(self, parent=None):
-#         self.fig, self.plot = gp.draw_graph()
-#         super().__init__(self.fig)
+    def __init__(self, fig, parent=None):
+        self.fig = fig
+        super().__init__(self.fig)
 
-#         self.plot.plot()
+        # self.fig, self.ax = plt.subplots(1, dpi=100, figsize=(5, 5), sharey=True, facecolor='white')
+        # super().__init__(self.fig)
+        # self.fig.suptitle("Graph")
+        # np.random.seed(20)
+        # y = np.random.randn(150).cumsum()
+        # self.ax = plt.axes()
+        # plt.plot(y, color='magenta')
+
+
+class QDoublePushButton(QPushButton):
+    doubleClicked = pyqtSignal()
+    clicked = pyqtSignal()
+
+    def __init__(self, *args, **kwargs):
+        QPushButton.__init__(self, *args, **kwargs)
+        self.timer = QTimer()
+        self.timer.setSingleShot(True)
+        self.timer.timeout.connect(self.clicked.emit)
+        super().clicked.connect(self.checkDoubleClick)
+
+    @pyqtSlot()
+    def checkDoubleClick(self):
+        if self.timer.isActive():
+            self.doubleClicked.emit()
+            self.timer.stop()
+        else:
+            self.timer.start(250)
+
+
+def fuzzy_ctrl():
+    model = ctrl.Antecedent(np.arange(2002, 2013, 1), 'model')
+    km = ctrl.Antecedent(np.arange(0, 101, 1), 'km')
+    fiyat = ctrl.Consequent(np.arange(0, 41, 1), 'fiyat')
+
+    # Auto-membership function population is possible with .automf(3, 5, or 7)
+
+    model.automf(3)
+    km.automf(3)
+
+    # Custom membership functions can be built interactively with a familiar,
+    # Pythonic API
+    fiyat['poor'] = fuzz.trimf(fiyat.universe, [0, 0, 20])
+    fiyat['average'] = fuzz.trimf(fiyat.universe, [0, 20, 40])
+    fiyat['good'] = fuzz.trimf(fiyat.universe, [20, 40, 40])
+
+    rule1 = ctrl.Rule(model['poor'] & km['good'], fiyat['poor'])
+    rule2 = ctrl.Rule(model['average'] & km['average'], fiyat['average'])
+    rule3 = ctrl.Rule(model['good'] & km['poor'], fiyat['good'])
+
+    tipping_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
+
+    tipping = ctrl.ControlSystemSimulation(tipping_ctrl)
+
+    tipping.input['model'] = 2005
+    tipping.input['km'] = 100
+
+    # Crunch the numbers
+    tipping.compute()
+
+    print(tipping.output['fiyat'])
 
 
 def fuzzy():
@@ -180,7 +370,19 @@ def fuzzy():
     plt.show()
 
 
+def excepthook(exc_type, exc_value, exc_tb):
+    tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
+    print("error catched!:")
+    print("error message:\n", tb)
+    QApplication.quit()
+    # or QtWidgets.QApplication.exit(0)
+
+
+fuzzy_ctrl()
+
+sys.excepthook = excepthook
 app = QApplication([])
 window = loadUi_example()
 window.show()
-app.exec_()
+ret = app.exec_()
+sys.exit(ret)
