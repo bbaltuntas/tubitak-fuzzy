@@ -6,9 +6,10 @@ from skfuzzy import control as ctrl
 
 class RuleScreen(object):
     def __init__(self, input_variables, output_variables, rules):
+        super().__init__()
         self.inputVariables = input_variables
         self.outputVariables = output_variables
-
+        self.operator = "and"
         self.rules = rules
         self.rule_ui = InputWindow()
         self.inputWindow = QMainWindow()
@@ -23,26 +24,51 @@ class RuleScreen(object):
         mf_functions_to_page(self.inputVariables, self.rule_ui.input_mf_frame_layout)
         mf_functions_to_page(self.outputVariables, self.rule_ui.output_mf_frame_layout)
         self.rule_ui.add_rule_button.clicked.connect(self.add_rule)
+        self.rule_ui.operator_box.currentTextChanged.connect(self.set_operator)
+
+        self.rule_ui.operator_box.addItem("and")
+        self.rule_ui.operator_box.addItem("or")
+
+    def set_operator(self, text):
+        self.operator = text
 
     def add_rule(self):
-        mf_values = []
+        input_mf_values = []
         for layout in self.rule_ui.input_mf_frame_layout.children():
-            mf_values.append(layout.itemAt(1).widget().selectedItems()[0].text())
+            input_mf_values.append(layout.itemAt(1).widget().selectedItems()[0].text())
 
+        output_mf_values = []
         for layout in self.rule_ui.output_mf_frame_layout.children():
-            mf_values.append(layout.itemAt(1).widget().selectedItems()[0].text())
+            output_mf_values.append(layout.itemAt(1).widget().selectedItems()[0].text())
 
         ########
-        rule = ctrl.Rule(
-            self.inputVariables[0].variable_ctrl[mf_values[0]] & self.inputVariables[1].variable_ctrl[mf_values[1]],
-            self.outputVariables[0].variable_ctrl[mf_values[2]])
+        inp_rule = self.inputVariables[0].variable_ctrl[input_mf_values[0]]
 
-        rule_content = "If " + self.inputVariables[0].name + " is " + mf_values[0] + " and " + self.inputVariables[
-            1].name + " is " + mf_values[1] + " then " + self.outputVariables[0].name + " is " + mf_values[2]
+        for index, element in enumerate(input_mf_values[1:]):
+            inp_rule = inp_rule & self.inputVariables[index + 1].variable_ctrl[element]
+
+        output_rule = self.outputVariables[0].variable_ctrl[output_mf_values[0]]
+        for index, element in enumerate(output_mf_values[1:]):
+            output_rule = output_rule & self.outputVariables[index + 1].variable_ctrl[element]
+
+        rule = ctrl.Rule(
+            inp_rule,
+            output_rule)
+
+        rule_content = "If " + self.inputVariables[0].name + " is " + input_mf_values[0]
+
+        for index, mf in enumerate(input_mf_values[1:]):
+            rule_content = rule_content + " and " + self.inputVariables[index + 1].name + " is " + input_mf_values[
+                index + 1]
+
+        rule_content = rule_content + " then "
+
+        for index, mf in enumerate(output_mf_values):
+            rule_content = rule_content + "(" + self.outputVariables[index].name + " is " + output_mf_values[
+                index] + ")"
 
         self.rules[rule] = rule_content
-
-        # self.rules.append(rule)
+        # self.rules[rule] = [rule_content , [...]]
 
         #########
 

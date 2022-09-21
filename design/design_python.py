@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:/pythonProjects/fuzzyProject/design/design.ui'
+# Form implementation generated from reading ui file 'D:/pythonProjects/tubitak-fuzzy/design/design.ui'
 #
 # Created by: PyQt5 UI code generator 5.6
 #
@@ -188,9 +188,12 @@ class Ui_MainWindow(object):
         self.actionOutput.setObjectName("actionOutput")
         self.actionInput = QtWidgets.QAction(MainWindow)
         self.actionInput.setObjectName("actionInput")
+        self.actiontest = QtWidgets.QAction(MainWindow)
+        self.actiontest.setObjectName("actiontest")
         self.menuAdd_Variable.addAction(self.actionInput)
         self.menuAdd_Variable.addAction(self.actionOutput)
         self.menuEDit.addAction(self.menuAdd_Variable.menuAction())
+        self.menuEDit.addAction(self.actiontest)
         self.menubar.addAction(self.menuEDit.menuAction())
 
         self.retranslateUi(MainWindow)
@@ -215,4 +218,5 @@ class Ui_MainWindow(object):
         self.menuAdd_Variable.setTitle(_translate("MainWindow", "Add Variable"))
         self.actionOutput.setText(_translate("MainWindow", "Output"))
         self.actionInput.setText(_translate("MainWindow", "Input"))
+        self.actiontest.setText(_translate("MainWindow", "test"))
 

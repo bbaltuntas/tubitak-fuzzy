@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import variable
 from design.design_python import Ui_MainWindow as MainWindow
+from flow_layout import FlowLayout
 from skfuzzy import control as ctrl
 from input_screen import InputScreen
 from rule_screen import RuleScreen
@@ -14,7 +15,7 @@ import sys
 import traceback
 
 
-class loadUi_example(QMainWindow):
+class MainScreen(QMainWindow):
     def __init__(self):
         super().__init__()
 
@@ -24,22 +25,17 @@ class loadUi_example(QMainWindow):
         self.ui = MainWindow()
         self.ui.setupUi(self)
 
+        # self.ui.gridLayout = FlowLayout(self.ui.gridFrame)
+        # self.ui.gridFrame.setLayout(self.ui.gridLayout)
         self.add_input_variable()
         self.add_output_variable()
 
         self.input_w = None
         self.rule_w = None
-        # self.inp_ui = InputWindow()
-        # self.inputWindow = QMainWindow()
 
-        # self.var = variable.Variable("input", ("input" + "sd"))
-        # self.var.init_range(2002, 2013)
-        # self.var.add_trimf_membership_function("dusuk", [2002, 2002, 2007])
-        # # self.var.add_trimf_membership_function("orta", [2002, 2007, 2012])
-        # # self.var.add_trimf_membership_function("yuksek", [2007, 2012, 2012])
-        # self.var.graph.legend()
+        self.set_actions()
 
-        # self.graph = InputGraph(self.var.fig)
+    def set_actions(self):
         self.ui.actionInput.triggered.connect(self.add_input_variable)
         self.ui.actionOutput.triggered.connect(self.add_output_variable)
 
@@ -49,17 +45,42 @@ class loadUi_example(QMainWindow):
         self.ui.rule_button.clicked.connect(self.open_rule_page)
         self.ui.startButton.clicked.connect(self.calc_result)
 
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.MouseButtonPress:
+            if event.button() == Qt.RightButton:
+                menu = QMenu()
+                del_action = menu.addAction("Delete Variable")
+                action = menu.exec_(obj.mapToGlobal(event.pos()))
+                var = obj.var
+                if action == del_action:
+                    if var.type == "input":
+                        self.input_variables.remove(var)
+                        self.ui.gridLayout.removeWidget(obj)
+                        self.ui.gridLayout.update()
+                        obj.deleteLater()
+                        # print(self.ui.gridLayout.itemAtPosition(1, 2).widget().text())
+
+                     
+                    elif var.type == "output":
+                        self.output_variables.remove(var)
+                        self.ui.output_layout.removeWidget(obj)
+                        self.ui.output_layout.update()
+                        obj.deleteLater()
+
+        return QObject.event(obj, event)
+
     def add_input_variable(self):
         length = len(self.input_variables)
         var = variable.Variable("input", ("input" + str(length + 1)))
         self.input_variables.append(var)
         length += 1
-        button = QDoublePushButton(var.name)
+        # print(length)
+        button = QDoublePushButton(var)
         button.setObjectName("inputButton")
         size_policy = QSizePolicy(
             QSizePolicy.Expanding, QSizePolicy.Expanding
         )
-        size_policy.setHorizontalStretch(1)
+        size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(button.sizePolicy().hasHeightForWidth())
         button.setSizePolicy(size_policy)
@@ -68,20 +89,23 @@ class loadUi_example(QMainWindow):
 
         button.clicked.connect(lambda: self.update_variable_line(var, button))
         button.doubleClicked.connect(lambda: self.input_button_action(var, button))
+        button.installEventFilter(self)
 
+        # self.ui.gridLayout.addWidget(button)
         self.ui.gridLayout.addWidget(
             button,
-            (length / 3) + 1 if length % 3 != 0 else length / 3,
+            int((length / 3)) + 1 if length % 3 != 0 else int(length / 3),
             length % 3 if length % 3 != 0 else 3,
         )
         self.ui.gridLayout.update()
+        # self.ui.gridLayout.update()
 
     def add_output_variable(self):
         length = len(self.output_variables)
         var = variable.Variable("output", ("output" + str(length + 1)), )
         self.output_variables.append(var)
         length += 1
-        button = QDoublePushButton(var.name)
+        button = QDoublePushButton(var)
         button.setObjectName("outputButton")
         size_policy = QSizePolicy(
             QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding
@@ -95,6 +119,7 @@ class loadUi_example(QMainWindow):
 
         button.clicked.connect(lambda: self.update_variable_line(var, button))
         button.doubleClicked.connect(lambda: self.input_button_action(var, button))
+        button.installEventFilter(self)
         self.ui.output_layout.addWidget(button)
         self.ui.output_layout.update()
 
@@ -148,30 +173,16 @@ class loadUi_example(QMainWindow):
         focus_widget = self.ui.frame.focusWidget()
         var_name = focus_widget.text()
 
-        for input_var in self.input_variables:
-            if var_name == input_var.name:
-                input_var.input = int(value)
+        try:
+            for input_var in self.input_variables:
+                if var_name == input_var.name:
+                    input_var.input = int(value)
+        except ValueError:
+            print("Hata")
 
     def input_button_action(self, var, button):
-        # self.inp_ui.setupUi(self.inputWindow)
-        # self.inputWindow.show()
         self.input_w = InputScreen(self.ui, var, self.input_variables, button)
 
-        # self.inp_ui.graph_layout.addWidget(self.graph)
-        # self.inp_ui.var_name.setText(var.name)
-
-        # self.inp_ui.var_name.editingFinished.connect(self.)
-        # var.name = self.inp_ui.var_name.text()
-        # self.inp_ui.func_add_button.clicked.connect(self.add_func)
-
-    # def add_func(self):
-    #     self.var.add_trimf_membership_function("orta", [2002, 2007, 2012])
-    #     self.var.add_trimf_membership_function("yuksek", [2007, 2012, 2012])
-    #     self.inp_ui.graph_layout.removeWidget(self.graph)
-    #     self.graph = InputGraph(self.var.fig)
-    #     self.inp_ui.graph_layout.addWidget(self.graph)
-    #     self.inp_ui.graph_layout.update()
-    #     self.var.graph.legend()
     def open_rule_page(self):
 
         self.rule_w = RuleScreen(self.input_variables, self.output_variables, self.rules)
@@ -189,13 +200,14 @@ class loadUi_example(QMainWindow):
         tipping_ctrl = ctrl.ControlSystem(self.rules.keys())
         tipping = ctrl.ControlSystemSimulation(tipping_ctrl)
 
-        tipping.input[self.input_variables[0].name] = self.input_variables[0].input
-        tipping.input[self.input_variables[1].name] = self.input_variables[1].input
+        for index in range(len(self.input_variables)):
+            tipping.input[self.input_variables[index].name] = self.input_variables[index].input
 
         # Crunch the numbers
         tipping.compute()
 
-        print(tipping.output[self.output_variables[0].name])
+        for index in range(len(self.output_variables)):
+            print(tipping.output[self.output_variables[index].name])
 
 
 class InputGraph(FigureCanvas):
@@ -204,21 +216,16 @@ class InputGraph(FigureCanvas):
         self.fig = fig
         super().__init__(self.fig)
 
-        # self.fig, self.ax = plt.subplots(1, dpi=100, figsize=(5, 5), sharey=True, facecolor='white')
-        # super().__init__(self.fig)
-        # self.fig.suptitle("Graph")
-        # np.random.seed(20)
-        # y = np.random.randn(150).cumsum()
-        # self.ax = plt.axes()
-        # plt.plot(y, color='magenta')
-
 
 class QDoublePushButton(QPushButton):
     doubleClicked = pyqtSignal()
     clicked = pyqtSignal()
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, var, *args, **kwargs):
+
         QPushButton.__init__(self, *args, **kwargs)
+        self.var = var
+        self.setText(var.name)
         self.timer = QTimer()
         self.timer.setSingleShot(True)
         self.timer.timeout.connect(self.clicked.emit)
@@ -378,11 +385,11 @@ def excepthook(exc_type, exc_value, exc_tb):
     # or QtWidgets.QApplication.exit(0)
 
 
-fuzzy_ctrl()
+# fuzzy_ctrl()
 
 sys.excepthook = excepthook
 app = QApplication([])
-window = loadUi_example()
+window = MainScreen()
 window.show()
 ret = app.exec_()
 sys.exit(ret)

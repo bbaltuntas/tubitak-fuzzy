@@ -83,6 +83,16 @@
        <widget class="QFrame" name="horizontalFrame">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
+          <widget class="QComboBox" name="operator_box">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="add_rule_button">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">

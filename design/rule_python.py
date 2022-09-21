@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:/pythonProjects/fuzzyProject/design/rule.ui'
+# Form implementation generated from reading ui file 'D:/pythonProjects/tubitak-fuzzy/design/rule.ui'
 #
 # Created by: PyQt5 UI code generator 5.6
 #
@@ -63,6 +63,14 @@ class Ui_MainWindow(object):
         self.horizontalFrame.setObjectName("horizontalFrame")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.horizontalFrame)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.operator_box = QtWidgets.QComboBox(self.horizontalFrame)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.operator_box.sizePolicy().hasHeightForWidth())
+        self.operator_box.setSizePolicy(sizePolicy)
+        self.operator_box.setObjectName("operator_box")
+        self.horizontalLayout_2.addWidget(self.operator_box)
         self.add_rule_button = QtWidgets.QPushButton(self.horizontalFrame)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)

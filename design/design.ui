@@ -42,7 +42,7 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <layout class="QGridLayout" name="gridLayout"/>
+             <layout class="QGridLayout" name="gridLayout" rowstretch="0" columnstretch="0" rowminimumheight="0" columnminimumwidth="0"/>
             </widget>
            </item>
            <item>
@@ -296,6 +296,7 @@
      <addaction name="actionOutput"/>
     </widget>
     <addaction name="menuAdd_Variable"/>
+    <addaction name="actiontest"/>
    </widget>
    <addaction name="menuEDit"/>
   </widget>
@@ -308,6 +309,11 @@
   <action name="actionInput">
    <property name="text">
     <string>Input</string>
+   </property>
+  </action>
+  <action name="actiontest">
+   <property name="text">
+    <string>test</string>
    </property>
   </action>
  </widget>

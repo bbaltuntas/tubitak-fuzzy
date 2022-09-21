@@ -10,7 +10,9 @@ class Variable:
         self.type = type
         self.name = name
         self.membership_functions = {}
+        self.mf_function_value = {}
         self.var_fit = {}
+        self.function_type = None
         self.fig, self.graph = plt.subplots(nrows=1, figsize=(10, 6))
         self.variable = None
         self.variable_ctrl = None
@@ -26,6 +28,7 @@ class Variable:
         self.end = end
         if self.type == "input":
             self.variable_ctrl = ctrl.Antecedent(np.arange(start, end, 1), self.name)
+
         elif self.type == "output":
             self.variable_ctrl = ctrl.Consequent(np.arange(start, end, 1), self.name)
         self.variable = np.arange(start, end, 1)
@@ -41,7 +44,6 @@ class Variable:
     def add_trimf_membership_function(self, key, values):
         self.variable_ctrl[key] = fuzz.trimf(self.variable_ctrl.universe, values)
         self.membership_functions[key] = mf.trimf(self.variable, values)
-
         self.add_plot(key, self.membership_functions[key])
 
         # self.membership_functions[key] = mf.trimf(self.variable, values)
@@ -49,10 +51,12 @@ class Variable:
         # if self.type == "input":
         #     self.var_fit[key] = fuzz.interp_membership(self.variable, self.membership_functions[key], self.input)
 
-    def add_gaussmf_membership_function(self, key, values):
-        self.membership_functions[key] = mf.gaussmf(self.variable, values)
+    def add_gaussmf_membership_function(self, key, mean, sigma):
+        self.variable_ctrl[key] = fuzz.gaussmf(self.variable_ctrl.universe, mean, sigma)
+        self.membership_functions[key] = mf.gaussmf(self.variable, mean, sigma)
         self.add_plot(key, self.membership_functions[key])
 
     def add_trapmf_membership_function(self, key, values):
+        self.variable_ctrl[key] = fuzz.trapmf(self.variable_ctrl.universe, values)
         self.membership_functions[key] = mf.trapmf(self.variable, values)
         self.add_plot(key, self.membership_functions[key])

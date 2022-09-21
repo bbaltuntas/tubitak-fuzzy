@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>824</width>
-    <height>629</height>
+    <height>611</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -111,6 +111,9 @@
                <property name="text">
                 <string>Triangular</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item>
@@ -160,7 +163,7 @@
              <item>
               <widget class="QFrame" name="edit_frame">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -254,6 +257,13 @@
                     </widget>
                    </item>
                   </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="info_label">
+                  <property name="text">
+                   <string/>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -351,11 +361,22 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="remove_mf_button">
-                    <property name="text">
-                     <string>Remove</string>
-                    </property>
-                   </widget>
+                   <layout class="QHBoxLayout" name="horizontalLayout_6">
+                    <item>
+                     <widget class="QPushButton" name="update_mf_button">
+                      <property name="text">
+                       <string>Update</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="remove_mf_button">
+                      <property name="text">
+                       <string>Remove</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>

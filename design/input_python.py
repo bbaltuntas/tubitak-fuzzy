@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:/pythonProjects/fuzzyProject/design/input.ui'
+# Form implementation generated from reading ui file 'D:/pythonProjects/tubitak-fuzzy/design/input.ui'
 #
 # Created by: PyQt5 UI code generator 5.6
 #
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(824, 629)
+        MainWindow.resize(824, 611)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
@@ -108,7 +108,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setSpacing(3)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.edit_frame = QtWidgets.QFrame(self.verticalFrame2)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.edit_frame.sizePolicy().hasHeightForWidth())
@@ -170,6 +170,10 @@ class Ui_MainWindow(object):
         self.mf_values_layout.setObjectName("mf_values_layout")
         self.verticalLayout_6.addWidget(self.mf_values)
         self.horizontalLayout_3.addWidget(self.edit_frame_2)
+        self.info_label = QtWidgets.QLabel(self.edit_frame)
+        self.info_label.setText("")
+        self.info_label.setObjectName("info_label")
+        self.horizontalLayout_3.addWidget(self.info_label)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem)
         self.verticalLayout_3.addWidget(self.edit_frame)
@@ -209,9 +213,15 @@ class Ui_MainWindow(object):
         self.mf_function_list.setSizePolicy(sizePolicy)
         self.mf_function_list.setObjectName("mf_function_list")
         self.verticalLayout_7.addWidget(self.mf_function_list)
+        self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_6.setObjectName("horizontalLayout_6")
+        self.update_mf_button = QtWidgets.QPushButton(self.verticalFrame3)
+        self.update_mf_button.setObjectName("update_mf_button")
+        self.horizontalLayout_6.addWidget(self.update_mf_button)
         self.remove_mf_button = QtWidgets.QPushButton(self.verticalFrame3)
         self.remove_mf_button.setObjectName("remove_mf_button")
-        self.verticalLayout_7.addWidget(self.remove_mf_button)
+        self.horizontalLayout_6.addWidget(self.remove_mf_button)
+        self.verticalLayout_7.addLayout(self.horizontalLayout_6)
         self.horizontalLayout_5.addWidget(self.verticalFrame3)
         self.verticalLayout_3.addLayout(self.horizontalLayout_5)
         self.verticalLayout_3.setStretch(0, 1)
@@ -242,5 +252,6 @@ class Ui_MainWindow(object):
         self.trapezoidal_mf.setText(_translate("MainWindow", "Trapezoidal"))
         self.label_3.setText(_translate("MainWindow", "Label"))
         self.mf_add_button.setText(_translate("MainWindow", "Add"))
+        self.update_mf_button.setText(_translate("MainWindow", "Update"))
         self.remove_mf_button.setText(_translate("MainWindow", "Remove"))
 
