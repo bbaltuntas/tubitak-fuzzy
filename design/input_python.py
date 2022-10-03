@@ -86,6 +86,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.verticalGroupBox_3)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.triangular_mf = QtWidgets.QRadioButton(self.verticalGroupBox_3)
+        self.triangular_mf.setCheckable(True)
         self.triangular_mf.setObjectName("triangular_mf")
         self.verticalLayout_5.addWidget(self.triangular_mf)
         self.gaussian_mf = QtWidgets.QRadioButton(self.verticalGroupBox_3)

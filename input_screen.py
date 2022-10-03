@@ -1,22 +1,14 @@
+import sys
 from PyQt5.QtWidgets import *
-from PyQt5 import QtCore, QtGui
 from PyQt5.QtGui import *
-from PyQt5.QtCore import *
 from design.input_python import Ui_MainWindow as InputWindow
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import time
 from threading import Thread
+from error_message import ErrorMessage
 
 
-def show_error_message(title, content):
-    msg = QMessageBox()
-    msg.setText(content)
-    msg.setIcon(QMessageBox.Critical)
-    msg.setWindowTitle(title)
-    msg.exec_()
-
-
-class InputScreen(object):
+class InputScreen(QMainWindow):
     def __init__(self, ui, var, inp_variables, button):
         super().__init__()
         self.var = var
@@ -29,8 +21,8 @@ class InputScreen(object):
 
         self.inp_ui.setupUi(self.inputWindow)
         self.inputWindow.show()
-
-        self.only_num = QDoubleValidator(-100, 100, 0)
+        self.inputWindow.setWindowTitle(var.name)
+        self.only_num = QDoubleValidator(-sys.maxsize - 1, sys.maxsize, 0)
 
         self.graph = InputGraph(self.var.fig)
         self.inp_ui.graph_layout.addWidget(self.graph)
@@ -50,7 +42,6 @@ class InputScreen(object):
         self.inp_ui.domain_max.setText(str(self.var.end - 1) if self.var.start is not None else None)
 
         self.set_actions()
-
         self.set_validator()
         self.update_mf_list()
 
@@ -80,10 +71,10 @@ class InputScreen(object):
                 end = int(self.inp_ui.domain_max.text())
                 self.var.init_range(start, end + 1)
             else:
-                show_error_message("Domain Error",
-                                   "Before setting domain, make sure there is no membership function exist.")
+                ErrorMessage("Domain Error",
+                             "Before setting domain, make sure there is no membership function exist.").show()
         except ValueError:
-            show_error_message("Domain Error", "Enter proper domain value.")
+            ErrorMessage("Domain Error", "Enter proper domain value.").show()
 
     def set_mf_values(self, count, type):
         if type == "triangular":
@@ -111,7 +102,7 @@ class InputScreen(object):
 
     def add_mf(self):
         if self.var.start is None or self.var.end is None:
-            show_error_message("Domain Error", "Before adding membership function, set domain values.")
+            ErrorMessage("Domain Error", "Before adding membership function, set domain values.").show()
         else:
             if self.inp_ui.triangular_mf.isChecked():
                 self.mf_general_func("trimmf")
@@ -150,15 +141,15 @@ class InputScreen(object):
                 for i in self.mf_line_edit:
                     i.setText(None)
             except ValueError:
-                show_error_message("Membership Function Value Error",
-                                   "Enter proper value for membership function.")
+                ErrorMessage("Membership Function Value Error",
+                             "Enter proper value for membership function.").show()
             except AssertionError:
                 if function == "trimmf":
-                    show_error_message("Membership Function Value Error",
-                                       "The elements requires pattern like a <= b <= c")
+                    ErrorMessage("Membership Function Value Error",
+                                 "The elements requires pattern like a <= b <= c").show()
                 elif function == "trapmf":
-                    show_error_message("Membership Function Value Error",
-                                       "The elements requires pattern like a <= b <= c <= d")
+                    ErrorMessage("Membership Function Value Error",
+                                 "The elements requires pattern like a <= b <= c <= d").show()
 
     def remove_mf(self):
         try:
@@ -174,7 +165,7 @@ class InputScreen(object):
             self.update_graph()
             self.update_mf_list()
         except IndexError:
-            show_error_message("Remove Error", "Select an element before removing.")
+            ErrorMessage("Remove Error", "Select an element before removing.").show()
 
     def update_mf(self, old_label):
         label = self.inp_ui.mf_label.text()

@@ -1,18 +1,21 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+import sys
+import traceback
+from skfuzzy import control as ctrl
 import numpy as np
 import skfuzzy as fuzz
 import skfuzzy.membership as mf
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+
+
 import variable
 from design.design_python import Ui_MainWindow as MainWindow
-from flow_layout import FlowLayout
-from skfuzzy import control as ctrl
+
 from input_screen import InputScreen
+from result_screen import ResultScreen
 from rule_screen import RuleScreen
-import sys
-import traceback
 
 
 class MainScreen(QMainWindow):
@@ -21,10 +24,10 @@ class MainScreen(QMainWindow):
 
         self.input_variables = []
         self.output_variables = []
-        self.rules = {}
+        self.rules = []
         self.ui = MainWindow()
         self.ui.setupUi(self)
-
+        self.setWindowTitle("Fuzzy System")
         # self.ui.gridLayout = FlowLayout(self.ui.gridFrame)
         # self.ui.gridFrame.setLayout(self.ui.gridLayout)
         self.add_input_variable()
@@ -32,8 +35,11 @@ class MainScreen(QMainWindow):
 
         self.input_w = None
         self.rule_w = None
+        self.res_w = None
 
         self.set_actions()
+        self.only_num = QDoubleValidator(-sys.maxsize - 1, sys.maxsize, 0)
+        self.ui.var_value.setValidator(self.only_num)
 
     def set_actions(self):
         self.ui.actionInput.triggered.connect(self.add_input_variable)
@@ -60,7 +66,6 @@ class MainScreen(QMainWindow):
                         obj.deleteLater()
                         # print(self.ui.gridLayout.itemAtPosition(1, 2).widget().text())
 
-                     
                     elif var.type == "output":
                         self.output_variables.remove(var)
                         self.ui.output_layout.removeWidget(obj)
@@ -178,7 +183,7 @@ class MainScreen(QMainWindow):
                 if var_name == input_var.name:
                     input_var.input = int(value)
         except ValueError:
-            print("Hata")
+            pass
 
     def input_button_action(self, var, button):
         self.input_w = InputScreen(self.ui, var, self.input_variables, button)
@@ -197,24 +202,7 @@ class MainScreen(QMainWindow):
         #
         # print(defuzzified)
 
-        tipping_ctrl = ctrl.ControlSystem(self.rules.keys())
-        tipping = ctrl.ControlSystemSimulation(tipping_ctrl)
-
-        for index in range(len(self.input_variables)):
-            tipping.input[self.input_variables[index].name] = self.input_variables[index].input
-
-        # Crunch the numbers
-        tipping.compute()
-
-        for index in range(len(self.output_variables)):
-            print(tipping.output[self.output_variables[index].name])
-
-
-class InputGraph(FigureCanvas):
-
-    def __init__(self, fig, parent=None):
-        self.fig = fig
-        super().__init__(self.fig)
+        self.res_w = ResultScreen(self.rules, self.input_variables, self.output_variables)
 
 
 class QDoublePushButton(QPushButton):
