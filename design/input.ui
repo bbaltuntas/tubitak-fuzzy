@@ -70,7 +70,7 @@
              <item>
               <widget class="QLabel" name="label_2">
                <property name="text">
-                <string>Domain</string>
+                <string>Range</string>
                </property>
               </widget>
              </item>
@@ -87,7 +87,7 @@
              <item>
               <widget class="QPushButton" name="set_domain">
                <property name="text">
-                <string>Set Domain</string>
+                <string>Set Range</string>
                </property>
               </widget>
              </item>

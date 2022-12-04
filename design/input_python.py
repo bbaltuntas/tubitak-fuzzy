@@ -245,8 +245,8 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "Name"))
-        self.label_2.setText(_translate("MainWindow", "Domain"))
-        self.set_domain.setText(_translate("MainWindow", "Set Domain"))
+        self.label_2.setText(_translate("MainWindow", "Range"))
+        self.set_domain.setText(_translate("MainWindow", "Set Range"))
         self.verticalGroupBox_3.setTitle(_translate("MainWindow", "Functions"))
         self.triangular_mf.setText(_translate("MainWindow", "Triangular"))
         self.gaussian_mf.setText(_translate("MainWindow", "Gaussian"))

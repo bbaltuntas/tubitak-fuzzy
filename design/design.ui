@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>802</width>
-    <height>602</height>
+    <width>820</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -160,7 +160,7 @@
            </property>
            <layout class="QGridLayout" name="gridLayout_3">
             <item row="0" column="1">
-             <widget class="QComboBox" name="comboBox"/>
+             <widget class="QComboBox" name="and_method_box"/>
             </item>
             <item row="0" column="0">
              <widget class="QLabel" name="label">
@@ -170,7 +170,7 @@
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QComboBox" name="comboBox_2"/>
+             <widget class="QComboBox" name="or_method_box"/>
             </item>
             <item row="1" column="0">
              <widget class="QLabel" name="label_2">
@@ -187,7 +187,7 @@
              </widget>
             </item>
             <item row="2" column="1">
-             <widget class="QComboBox" name="comboBox_3"/>
+             <widget class="QComboBox" name="defuz_box"/>
             </item>
            </layout>
           </widget>
@@ -209,6 +209,27 @@
            <layout class="QGridLayout" name="gridLayout_2">
             <item row="1" column="1">
              <widget class="QLineEdit" name="variable_name_line"/>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLabel" name="range_label">
+              <property name="text">
+               <string>[0 , 1]</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>Range</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>Type</string>
+              </property>
+             </widget>
             </item>
             <item row="0" column="0">
              <widget class="QLabel" name="label_4">
@@ -234,37 +255,6 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_7">
-              <property name="text">
-               <string>Range</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>Type</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QLabel" name="label_9">
-              <property name="text">
-               <string>[0,1]</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>Value</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QLineEdit" name="var_value"/>
-            </item>
            </layout>
           </widget>
          </item>
@@ -280,33 +270,49 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>802</width>
+     <width>820</width>
      <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuEDit">
     <property name="title">
+     <string>File</string>
+    </property>
+    <widget class="QMenu" name="menuNew_Fuzzy_System">
+     <property name="title">
+      <string>New Fuzzy System</string>
+     </property>
+     <addaction name="actionMamdani"/>
+     <addaction name="actionSugeno"/>
+    </widget>
+    <addaction name="menuNew_Fuzzy_System"/>
+    <addaction name="actionLanguage"/>
+    <addaction name="actionImport_Data"/>
+    <addaction name="actionSave_Data"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
      <string>Edit</string>
     </property>
-    <widget class="QMenu" name="menuAdd_Variable">
+    <widget class="QMenu" name="menuAdd_Variable_2">
      <property name="title">
       <string>Add Variable</string>
      </property>
      <addaction name="actionInput"/>
      <addaction name="actionOutput"/>
     </widget>
-    <addaction name="menuAdd_Variable"/>
-    <addaction name="actiontest"/>
+    <addaction name="menuAdd_Variable_2"/>
    </widget>
    <addaction name="menuEDit"/>
+   <addaction name="menuEdit"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionOutput">
+  <action name="actionOutput_2">
    <property name="text">
     <string>Output</string>
    </property>
   </action>
-  <action name="actionInput">
+  <action name="actionInput_2">
    <property name="text">
     <string>Input</string>
    </property>
@@ -314,6 +320,41 @@
   <action name="actiontest">
    <property name="text">
     <string>test</string>
+   </property>
+  </action>
+  <action name="actionLanguage">
+   <property name="text">
+    <string>Language</string>
+   </property>
+  </action>
+  <action name="actionImport_Data">
+   <property name="text">
+    <string>Import Data</string>
+   </property>
+  </action>
+  <action name="actionSave_Data">
+   <property name="text">
+    <string>Save Data</string>
+   </property>
+  </action>
+  <action name="actionInput">
+   <property name="text">
+    <string>Input</string>
+   </property>
+  </action>
+  <action name="actionOutput">
+   <property name="text">
+    <string>Output</string>
+   </property>
+  </action>
+  <action name="actionMamdani">
+   <property name="text">
+    <string>Mamdani</string>
+   </property>
+  </action>
+  <action name="actionSugeno">
+   <property name="text">
+    <string>Sugeno</string>
    </property>
   </action>
  </widget>

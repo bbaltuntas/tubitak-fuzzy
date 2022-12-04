@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QModelIndex
 import numpy as np
 from skfuzzy import control as ctrl
+from error_message import ErrorMessage
 
 
 def create_rule_content(rule):
@@ -13,10 +14,11 @@ def create_rule_content(rule):
 
 
 class RuleScreen(object):
-    def __init__(self, input_variables, output_variables, rules):
+    def __init__(self, input_variables, output_variables, rules, parent):
         super().__init__()
         self.inputVariables = input_variables
         self.outputVariables = output_variables
+        self.parent = parent
         self.operator = "and"
         self.rules: list = rules
         self.rule_ui = InputWindow()
@@ -45,8 +47,6 @@ class RuleScreen(object):
         rule_index = int(index.row())
         current_rule: ctrl.Rule = self.rules[rule_index]
 
-        # TODO index seçerken input sırası ile isimler uyuşmuyor
-        # list widgetlarin object name ini var name yapabilirsin onun üzerinden işlem yapılabilir.
         for k in range(self.rule_ui.input_mf_frame_layout.count()):
             list_widget: QListWidget = self.rule_ui.input_mf_frame_layout.itemAt(k).itemAt(1).widget()
             list_widget.setCurrentRow(0)
@@ -78,8 +78,7 @@ class RuleScreen(object):
             output_mf_values.append(layout.itemAt(1).widget().selectedItems()[0].text())
 
         ########
-        if input_mf_values[0] == "None" \
-                                 "":
+        if input_mf_values[0] == "None":
             inp_rule = None
         else:
             inp_rule = self.inputVariables[0].variable_ctrl[input_mf_values[0]]
@@ -108,11 +107,8 @@ class RuleScreen(object):
                 if output_rule is None:
                     output_rule = self.outputVariables[index + 1].variable_ctrl[element]
                 else:
-                    if self.operator == "and":
-                        output_rule = output_rule & self.outputVariables[index + 1].variable_ctrl[element]
-                    elif self.operator == "or":
-                        output_rule = output_rule | self.outputVariables[index + 1].variable_ctrl[element]
-        # TODO multiple output sıkıntılı
+                    output_rule = output_rule, self.outputVariables[index + 1].variable_ctrl[element]
+
         rule = ctrl.Rule(
             inp_rule,
             output_rule)
@@ -120,38 +116,14 @@ class RuleScreen(object):
         return rule
 
     def add_rule(self):
-        try:
-            rule = self.create_control_rule()
-            # rule_content = "If " + self.inputVariables[0].name + " is " + input_mf_values[0]
-            #
-            # for index, mf in enumerate(input_mf_values[1:]):
-            #     rule_content = rule_content + " and " + self.inputVariables[index + 1].name + " is " + input_mf_values[
-            #         index + 1]
-            #
-            # rule_content = rule_content + " then "
-            #
-            # for index, mf in enumerate(output_mf_values):
-            #     rule_content = rule_content + "(" + self.outputVariables[index].name + " is " + output_mf_values[
-            #         index] + ")"
-            print(rule)
-            self.rules.append(rule),
+        rule = self.create_control_rule()
 
-            # self.rules[rule] = [rule_content , [...]]
-            rule_content = create_rule_content(rule)
-            #########
+        self.rules.append(rule)
 
-            # rule = np.fmin(
-            #     np.fmin(self.inputVariables[0].var_fit[mf_values[0]], self.inputVariables[1].var_fit[mf_values[1]]),
-            #     self.outputVariables[0].membership_functions[mf_values[2]])
-            #
-            # self.rules[mf_values[2]] = rule
+        rule_content = create_rule_content(rule)
 
-            # print(mf_values)
-
-            item = QListWidgetItem(rule_content)
-            self.rule_ui.rule_list.addItem(item)
-        except ValueError:
-            pass
+        item = QListWidgetItem(rule_content)
+        self.rule_ui.rule_list.addItem(item)
 
     def delete_rule(self):
         selected_index = self.rule_ui.rule_list.currentRow().__index__()
@@ -175,7 +147,7 @@ def mf_functions_to_page(variable_list, layout):
         list_w.setSizePolicy(size_policy)
         list_w.addItem(QListWidgetItem("None"))
         list_w.setObjectName(inp.name)
-        for key in inp.membership_functions:
+        for key in inp.mf_function_value:
             widget_item = QListWidgetItem(key)
             list_w.addItem(widget_item)
         v_layout = QVBoxLayout()
