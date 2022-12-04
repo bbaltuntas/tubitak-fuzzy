@@ -6,10 +6,10 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
 from error_message import ErrorMessage
-from input_screen import InputScreen
+from screens.input_screen import InputScreen
 
-from rule_sugeno import RuleSugeno
-from result_sugeno import ResultSugeno
+from screens.rule_sugeno import RuleSugeno
+from screens.result_sugeno import ResultSugeno
 
 
 # TODO rule kısmında yanlış girilmeyi önle

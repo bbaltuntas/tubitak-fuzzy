@@ -1,7 +1,7 @@
 import sys
 import traceback
 from PyQt5.QtWidgets import *
-from main_mamdani import MainScreen
+from screens.main_mamdani import MainScreen
 
 
 # sugeno trapezoidal func için graf eklemeyi ekle

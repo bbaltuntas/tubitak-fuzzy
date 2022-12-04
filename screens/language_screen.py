@@ -28,7 +28,7 @@ class LanguageScreen(QDialog):
     def set_language(self):
         language = self.lan_ui.lang_list_widget.selectedItems()[0].text()
 
-        with open('config.json', 'r') as f:
+        with open('../config.json', 'r') as f:
             config = json.load(f)
 
         # edit the data
@@ -36,7 +36,7 @@ class LanguageScreen(QDialog):
         config['lan'] = language
 
         # write it back to the file
-        with open('config.json', 'w') as f:
+        with open('../config.json', 'w') as f:
             json.dump(config, f)
         self.parent.config = config
         QApplication.quit()

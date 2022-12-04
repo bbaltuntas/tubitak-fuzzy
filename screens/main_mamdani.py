@@ -10,10 +10,10 @@ import pickle
 from design.design_python import Ui_MainWindow as MainWindow
 
 import variable
-from input_screen import InputScreen
-from result_screen import ResultScreen
-from rule_screen import RuleScreen
-from language_screen import LanguageScreen
+from screens.input_screen import InputScreen
+from screens.result_screen import ResultScreen
+from screens.rule_screen import RuleScreen
+from screens.language_screen import LanguageScreen
 from error_message import ErrorMessage
 from main_sugeno import MainSugeno
 
@@ -41,11 +41,11 @@ class MainScreen(QMainWindow):
         self.set_actions()
         self.to_language_key = None
         try:
-            with open('config.json', 'r') as f:
+            with open('../config.json', 'r') as f:
                 self.config = json.load(f)
         except Exception:
             config = {'lan': 'turkish'}
-            with open('config.json', 'w') as f:
+            with open('../config.json', 'w') as f:
                 json.dump(config, f)
 
         try:
