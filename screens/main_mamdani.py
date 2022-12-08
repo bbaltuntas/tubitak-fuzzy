@@ -15,7 +15,7 @@ from screens.result_screen import ResultScreen
 from screens.rule_screen import RuleScreen
 from screens.language_screen import LanguageScreen
 from error_message import ErrorMessage
-from main_sugeno import MainSugeno
+from screens.main_sugeno import MainSugeno
 
 
 class MainScreen(QMainWindow):
@@ -27,7 +27,7 @@ class MainScreen(QMainWindow):
         self.rules = []
         self.ui = MainWindow()
         self.ui.setupUi(self)
-        self.setWindowTitle("Fuzzy System")
+        self.setWindowTitle("Mamdani Fuzzy Inference System")
         self.add_input_variable()
         self.add_output_variable()
         self.and_method = "min"
@@ -162,7 +162,7 @@ class MainScreen(QMainWindow):
         size_policy.setHeightForWidth(button.sizePolicy().hasHeightForWidth())
         button.setSizePolicy(size_policy)
         button.setStyleSheet(
-            "#inputButton:focus {border : 2px solid green;}  #inputButton{border: 1px solid grey; border-radius:5px}")
+            "#inputButton:focus {border : 2px solid #1990EA;background-color:#D5E7F5;}  #inputButton{border: 1px solid grey; border-radius:5px;background-color:#D5E7F5;}")
 
         button.clicked.connect(lambda: self.update_variable_line(var, button))
         button.doubleClicked.connect(lambda: self.input_button_action(var, button))
@@ -194,7 +194,7 @@ class MainScreen(QMainWindow):
         size_policy.setHeightForWidth(button.sizePolicy().hasHeightForWidth())
         button.setSizePolicy(size_policy)
         button.setStyleSheet(
-            "#outputButton:focus {border : 2px solid green;}  #outputButton{border: 1px solid grey; border-radius:5px}")
+            "#outputButton:focus {border : 2px solid #1990EA;background-color:#FDFDBD;}  #outputButton{border: 1px solid grey; border-radius:5px;background-color:#FDFDBD;}")
 
         button.clicked.connect(lambda: self.update_variable_line(var, button))
         button.doubleClicked.connect(lambda: self.input_button_action(var, button))
@@ -205,11 +205,11 @@ class MainScreen(QMainWindow):
     def update_variable_line(self, var, button):
         for i in reversed(range(self.ui.gridLayout.count())):
             self.ui.gridLayout.itemAt(i).widget().setStyleSheet(
-                "#inputButton:focus {border : 3px solid green;}  #inputButton{border: 1px solid grey; border-radius:5px}")
+                "#inputButton:focus {border : 3px solid #1990EA;background-color:#D5E7F5;}  #inputButton{border: 1px solid grey; border-radius:5px;background-color:#D5E7F5;}")
 
         for o in reversed(range(self.ui.output_layout.count())):
             self.ui.output_layout.itemAt(o).widget().setStyleSheet(
-                "#outputButton:focus {border : 3px solid green;} #outputButton{border: 1px solid grey;border-radius:5px}")
+                "#outputButton:focus {border : 3px solid #1990EA;background-color:#FDFDBD;} #outputButton{border: 1px solid grey;border-radius:5px;background-color:#FDFDBD;}")
 
         self.ui.variable_name_line.setText(var.name)
         self.ui.variable_type_line.setText(var.type)
@@ -219,11 +219,11 @@ class MainScreen(QMainWindow):
         if var.type == "input":
 
             button.setStyleSheet(
-                "#inputButton:focus {border : 3px solid green;} #inputButton{border:3px solid green;border-radius:5px}")
+                "#inputButton:focus {border : 3px solid #1990EA;background-color:#D5E7F5;} #inputButton{border:3px solid #1990EA;border-radius:5px;background-color:#D5E7F5;}")
         else:
 
             button.setStyleSheet(
-                "#outputButton:focus {border : 3px solid green;} #outputButton{border:3px solid green;border-radius:5px}")
+                "#outputButton:focus {border : 3px solid #1990EA; background-color:#FDFDBD;} #outputButton{border:3px solid green;border-radius:5px;background-color:#FDFDBD;}")
 
     def update_variable(self):
 

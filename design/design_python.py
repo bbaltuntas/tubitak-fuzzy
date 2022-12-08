@@ -12,6 +12,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(820, 600)
+        MainWindow.setStyleSheet("#MainWindow{\n"
+"    background-color: rgb(255, 255, 255);\n"
+"}")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -168,7 +171,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addLayout(self.verticalLayout)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 820, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 820, 26))
         self.menubar.setObjectName("menubar")
         self.menuEDit = QtWidgets.QMenu(self.menubar)
         self.menuEDit.setObjectName("menuEDit")

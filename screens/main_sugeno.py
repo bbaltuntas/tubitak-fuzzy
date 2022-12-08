@@ -22,7 +22,7 @@ class MainSugeno(QMainWindow):
         self.sugeno_ui.setupUi(self.sugenoWindow)
         self.sugenoWindow.show()
 
-        self.sugenoWindow.setWindowTitle("Sugeno")
+        self.sugenoWindow.setWindowTitle("Sugeno Fuzzy Inference System")
         self.input_variables = []
         self.output_variables = []
         self.add_input_variable()
@@ -119,7 +119,7 @@ class MainSugeno(QMainWindow):
         size_policy.setHeightForWidth(button.sizePolicy().hasHeightForWidth())
         button.setSizePolicy(size_policy)
         button.setStyleSheet(
-            "#inputButton:focus {border : 2px solid green;}  #inputButton{border: 1px solid grey; border-radius:5px}")
+            "#inputButton:focus {border : 2px solid #1990EA;background-color:#D5E7F5;}  #inputButton{border: 1px solid grey; border-radius:5px;background-color:#D5E7F5;}")
 
         button.clicked.connect(lambda: self.update_variable_line(var, button))
         button.doubleClicked.connect(lambda: self.input_button_action(var, button))
@@ -149,7 +149,7 @@ class MainSugeno(QMainWindow):
         size_policy.setHeightForWidth(button.sizePolicy().hasHeightForWidth())
         button.setSizePolicy(size_policy)
         button.setStyleSheet(
-            "#outputButton:focus {border : 2px solid green;}  #outputButton{border: 1px solid grey; border-radius:5px}")
+            "#outputButton:focus {border : 2px solid #1990EA;background-color:#FDFDBD;}  #outputButton{border: 1px solid grey; border-radius:5px;background-color:#FDFDBD;}")
 
         button.clicked.connect(lambda: self.update_variable_line(var, button))
         self.sugeno_ui.output_layout.addWidget(button)
@@ -158,11 +158,11 @@ class MainSugeno(QMainWindow):
     def update_variable_line(self, var, button):
         for i in reversed(range(self.sugeno_ui.gridLayout.count())):
             self.sugeno_ui.gridLayout.itemAt(i).widget().setStyleSheet(
-                "#inputButton:focus {border : 3px solid green;}  #inputButton{border: 1px solid grey; border-radius:5px}")
+                "#inputButton:focus {border : 3px solid #1990EA;background-color:#D5E7F5;}  #inputButton{border: 1px solid grey; border-radius:5px;background-color:#D5E7F5;}")
 
         for o in reversed(range(self.sugeno_ui.output_layout.count())):
             self.sugeno_ui.output_layout.itemAt(o).widget().setStyleSheet(
-                "#outputButton:focus {border : 3px solid green;} #outputButton{border: 1px solid grey;border-radius:5px}")
+                "#outputButton:focus {border : 3px solid #1990EA;background-color:#FDFDBD;} #outputButton{border: 1px solid grey;border-radius:5px;background-color:#FDFDBD;}")
 
         self.sugeno_ui.variable_name_line.setText(var.name)
         self.sugeno_ui.variable_type_line.setText(var.type)
@@ -172,11 +172,12 @@ class MainSugeno(QMainWindow):
         if var.type == "input":
 
             button.setStyleSheet(
-                "#inputButton:focus {border : 3px solid green;} #inputButton{border:3px solid green;border-radius:5px}")
+                "#inputButton:focus {border : 3px solid #1990EA;background-color:#D5E7F5;} #inputButton{border:3px solid #1990EA;border-radius:5px;background-color:#D5E7F5;}")
+
         else:
 
             button.setStyleSheet(
-                "#outputButton:focus {border : 3px solid green;} #outputButton{border:3px solid green;border-radius:5px}")
+                "#outputButton:focus {border : 3px solid #1990EA; background-color:#FDFDBD;} #outputButton{border:3px solid green;border-radius:5px;background-color:#FDFDBD;}")
 
     def update_variable(self):
         new_variable_name = self.sugeno_ui.variable_name_line.text()
@@ -210,8 +211,8 @@ class MainSugeno(QMainWindow):
                 # rule.content = new_rule.content
 
     def save_data(self):
-        dirname, _ = QFileDialog.getSaveFileName(self.sugenoWindow, "Choose Directory", self.desktop, "data",
-                                                 "Python Files (*.fis)")
+        dirname, _ = QFileDialog.getSaveFileName(self.sugenoWindow, "Choose Directory", "data", "Python Files (*.fis)",
+                                                 )
         if dirname:
             try:
                 with open(dirname, "wb") as f:
