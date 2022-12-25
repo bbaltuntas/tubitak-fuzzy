@@ -136,11 +136,11 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "Function Type"))
+        self.label.setText(_translate("MainWindow", "Fonksiyon Tipi"))
         self.function_type.setItemText(0, _translate("MainWindow", "linear"))
         self.function_type.setItemText(1, _translate("MainWindow", "constant"))
-        self.label_2.setText(_translate("MainWindow", "Parameters"))
-        self.add_rule_button.setText(_translate("MainWindow", "Add Rule"))
-        self.update_button.setText(_translate("MainWindow", "Update"))
-        self.delete_button.setText(_translate("MainWindow", "Delete"))
+        self.label_2.setText(_translate("MainWindow", "Parametre(ler)"))
+        self.add_rule_button.setText(_translate("MainWindow", "Ekle"))
+        self.update_button.setText(_translate("MainWindow", "Güncelle"))
+        self.delete_button.setText(_translate("MainWindow", "Sil"))
 

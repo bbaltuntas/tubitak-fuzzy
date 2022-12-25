@@ -101,7 +101,7 @@
                  <string notr="true"/>
                 </property>
                 <property name="text">
-                 <string>Start</string>
+                 <string>Görüntüle</string>
                 </property>
                </widget>
               </item>
@@ -170,7 +170,7 @@
             <item row="0" column="0">
              <widget class="QLabel" name="label">
               <property name="text">
-               <string>And method</string>
+               <string>And metodu</string>
               </property>
              </widget>
             </item>
@@ -180,7 +180,7 @@
             <item row="1" column="0">
              <widget class="QLabel" name="label_2">
               <property name="text">
-               <string>Or method</string>
+               <string>Or metodu</string>
               </property>
              </widget>
             </item>
@@ -225,21 +225,21 @@
             <item row="3" column="0">
              <widget class="QLabel" name="label_7">
               <property name="text">
-               <string>Range</string>
+               <string>Aralık</string>
               </property>
              </widget>
             </item>
             <item row="2" column="0">
              <widget class="QLabel" name="label_6">
               <property name="text">
-               <string>Type</string>
+               <string>Tip</string>
               </property>
              </widget>
             </item>
             <item row="0" column="0">
              <widget class="QLabel" name="label_4">
               <property name="text">
-               <string>Current Variable</string>
+               <string>Seçili Değişken</string>
               </property>
               <property name="scaledContents">
                <bool>false</bool>
@@ -249,7 +249,7 @@
             <item row="1" column="0">
              <widget class="QLabel" name="label_5">
               <property name="text">
-               <string>Name</string>
+               <string>İsim</string>
               </property>
              </widget>
             </item>
@@ -276,12 +276,12 @@
      <x>0</x>
      <y>0</y>
      <width>820</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuEDit">
     <property name="title">
-     <string>File</string>
+     <string>Dosya</string>
     </property>
     <widget class="QMenu" name="menuNew_Fuzzy_System">
      <property name="title">
@@ -297,11 +297,11 @@
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>Edit</string>
+     <string>Düzenleme</string>
     </property>
     <widget class="QMenu" name="menuAdd_Variable_2">
      <property name="title">
-      <string>Add Variable</string>
+      <string>Değişken Ekle</string>
      </property>
      <addaction name="actionInput"/>
      <addaction name="actionOutput"/>
@@ -329,17 +329,17 @@
   </action>
   <action name="actionLanguage">
    <property name="text">
-    <string>Language</string>
+    <string>Dil</string>
    </property>
   </action>
   <action name="actionImport_Data">
    <property name="text">
-    <string>Import Data</string>
+    <string>Veriyi yükle</string>
    </property>
   </action>
   <action name="actionSave_Data">
    <property name="text">
-    <string>Save Data</string>
+    <string>Veriyi kaydet</string>
    </property>
   </action>
   <action name="actionInput">

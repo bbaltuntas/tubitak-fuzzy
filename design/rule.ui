@@ -101,7 +101,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Add Rule</string>
+            <string>Ekle</string>
            </property>
           </widget>
          </item>
@@ -114,14 +114,14 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Update</string>
+            <string>Güncelle</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="delete_button">
            <property name="text">
-            <string>Delete</string>
+            <string>Sil</string>
            </property>
           </widget>
          </item>

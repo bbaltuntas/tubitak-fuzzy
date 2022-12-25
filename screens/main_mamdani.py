@@ -1,10 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-import googletrans
-import textblob
-
 from skfuzzy import control as ctrl
-import json
+
 import pickle
 
 from design.design_python import Ui_MainWindow as MainWindow
@@ -40,25 +37,26 @@ class MainScreen(QMainWindow):
         self.sugeno_w = None
         self.set_actions()
         self.to_language_key = None
-        try:
-            with open('../config.json', 'r') as f:
-                self.config = json.load(f)
-        except Exception:
-            config = {'lan': 'turkish'}
-            with open('../config.json', 'w') as f:
-                json.dump(config, f)
 
-        try:
-            for key, value in googletrans.LANGUAGES.items():
-                if value == self.config['lan']:
-                    self.to_language_key = key
+        # try:
+        #     with open('../config.json', 'r') as f:
+        #         self.config = json.load(f)
+        # except Exception:
+        #     config = {'lan': 'turkish'}
+        #     with open('../config.json', 'w') as f:
+        #         json.dump(config, f)
+        #
+        # try:
+        #     for key, value in googletrans.LANGUAGES.items():
+        #         if value == self.config['lan']:
+        #             self.to_language_key = key
+        #
+        #     words = textblob.TextBlob(self.ui.startButton.text())
+        #     words = words.translate(from_lang="en", to=self.to_language_key)
+        #     self.ui.startButton.setText(str(words))
 
-            words = textblob.TextBlob(self.ui.startButton.text())
-            words = words.translate(from_lang="en", to=self.to_language_key)
-            self.ui.startButton.setText(str(words))
-
-        except Exception as ex:
-            print(str(ex))
+        # except Exception as ex:
+        #     print(str(ex))
 
     # def closeEvent(self, event):
     #     reply = QMessageBox.question(

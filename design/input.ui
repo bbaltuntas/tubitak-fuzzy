@@ -48,7 +48,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>Name</string>
+                <string>İsim</string>
                </property>
               </widget>
              </item>
@@ -70,7 +70,7 @@
              <item>
               <widget class="QLabel" name="label_2">
                <property name="text">
-                <string>Range</string>
+                <string>Aralık</string>
                </property>
               </widget>
              </item>
@@ -87,7 +87,7 @@
              <item>
               <widget class="QPushButton" name="set_domain">
                <property name="text">
-                <string>Set Range</string>
+                <string>Kaydet</string>
                </property>
               </widget>
              </item>
@@ -103,7 +103,7 @@
              </sizepolicy>
             </property>
             <property name="title">
-             <string>Functions</string>
+             <string>Fonksiyon</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
@@ -187,7 +187,7 @@
                    <item>
                     <widget class="QLabel" name="label_3">
                      <property name="text">
-                      <string>Label</string>
+                      <string>Üyelik Fonskiyonu İsmi</string>
                      </property>
                     </widget>
                    </item>
@@ -222,7 +222,7 @@
                          </sizepolicy>
                         </property>
                         <property name="text">
-                         <string>Add</string>
+                         <string>Ekle</string>
                         </property>
                        </widget>
                       </item>
@@ -365,14 +365,14 @@
                     <item>
                      <widget class="QPushButton" name="update_mf_button">
                       <property name="text">
-                       <string>Update</string>
+                       <string>Güncelle</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QPushButton" name="remove_mf_button">
                       <property name="text">
-                       <string>Remove</string>
+                       <string>Sil</string>
                       </property>
                      </widget>
                     </item>

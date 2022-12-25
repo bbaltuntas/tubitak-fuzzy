@@ -14,11 +14,11 @@ from screens.result_sugeno import ResultSugeno
 
 # TODO rule kısmında yanlış girilmeyi önle
 class MainSugeno(QMainWindow):
-    def __init__(self, mamdani):
+    def __init__(self,):
         super().__init__()
         self.sugeno_ui = InputWindow()
         self.sugenoWindow = QMainWindow()
-        self.mamdani = mamdani
+        # self.mamdani = mamdani
         self.sugeno_ui.setupUi(self.sugenoWindow)
         self.sugenoWindow.show()
 
@@ -40,20 +40,20 @@ class MainSugeno(QMainWindow):
         self.sugeno_ui.actionInput.triggered.connect(self.add_input_variable)
         self.sugeno_ui.actionSave_Data.triggered.connect(self.save_data)
         self.sugeno_ui.actionImport_Data.triggered.connect(self.import_data)
-        self.sugeno_ui.actionMamdani.triggered.connect(self.open_mamdani)
-        self.sugeno_ui.actionSugeno.triggered.connect(self.open_sugeno)
+        # self.sugeno_ui.actionMamdani.triggered.connect(self.open_mamdani)
+        # self.sugeno_ui.actionSugeno.triggered.connect(self.open_sugeno)
 
         self.sugeno_ui.variable_name_line.editingFinished.connect(self.update_variable)
         self.sugeno_ui.rule_button.clicked.connect(self.open_rule_page)
         self.sugeno_ui.startButton.clicked.connect(self.calc_result)
 
-    def open_mamdani(self):
-        self.sugenoWindow.close()
-        window = self.mamdani.show()
-
-    def open_sugeno(self):
-        self.sugenoWindow.close()
-        window = MainSugeno(self.mamdani)
+    # def open_mamdani(self):
+    #     self.sugenoWindow.close()
+    #     window = self.mamdani.show()
+    #
+    # def open_sugeno(self):
+    #     self.sugenoWindow.close()
+    #     window = MainSugeno(self.mamdani)
 
     def open_rule_page(self):
         self.rw = RuleSugeno(self.input_variables, self.rules)

@@ -244,15 +244,15 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "Name"))
-        self.label_2.setText(_translate("MainWindow", "Range"))
-        self.set_domain.setText(_translate("MainWindow", "Set Range"))
-        self.verticalGroupBox_3.setTitle(_translate("MainWindow", "Functions"))
+        self.label.setText(_translate("MainWindow", "İsim"))
+        self.label_2.setText(_translate("MainWindow", "Aralık"))
+        self.set_domain.setText(_translate("MainWindow", "Kaydet"))
+        self.verticalGroupBox_3.setTitle(_translate("MainWindow", "Fonksiyon"))
         self.triangular_mf.setText(_translate("MainWindow", "Triangular"))
         self.gaussian_mf.setText(_translate("MainWindow", "Gaussian"))
         self.trapezoidal_mf.setText(_translate("MainWindow", "Trapezoidal"))
-        self.label_3.setText(_translate("MainWindow", "Label"))
-        self.mf_add_button.setText(_translate("MainWindow", "Add"))
-        self.update_mf_button.setText(_translate("MainWindow", "Update"))
-        self.remove_mf_button.setText(_translate("MainWindow", "Remove"))
+        self.label_3.setText(_translate("MainWindow", "Üyelik Fonskiyonu İsmi"))
+        self.mf_add_button.setText(_translate("MainWindow", "Ekle"))
+        self.update_mf_button.setText(_translate("MainWindow", "Güncelle"))
+        self.remove_mf_button.setText(_translate("MainWindow", "Sil"))
 

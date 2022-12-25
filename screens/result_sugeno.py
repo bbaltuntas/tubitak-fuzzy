@@ -10,6 +10,7 @@ from skfuzzy.control.visualization import FuzzyVariableVisualizer
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 import matplotlib.lines as lines
+from error_message import ErrorMessage
 
 
 class ResultSugeno(object):
@@ -50,66 +51,74 @@ class ResultSugeno(object):
         self.res_sug_ui.fuzzy_button.clicked.connect(self.calc_sugeno)
 
     def calc_sugeno(self):
-        for i in reversed(range(self.res_lay.count())):
-            layout = self.res_lay.itemAt(i).layout()
-            for j in reversed(range(layout.count())):
-                layout.itemAt(j).widget().setParent(None)
-        self.fig, self.ax = None, None
-        try:
-            total_val = 0
-            min_weight_list = []
-            for rule in self.rules:
-                ver_lay = QHBoxLayout()
+        isValid = True
+        for var in self.input_variables:
+            if var.input is None:
+                isValid = False
+                ErrorMessage("Input Hatası", "Değişken değerleri giriniz!").show()
+                break
+        if isValid:
+            for i in reversed(range(self.res_lay.count())):
+                layout = self.res_lay.itemAt(i).layout()
+                for j in reversed(range(layout.count())):
+                    layout.itemAt(j).widget().setParent(None)
+            self.fig, self.ax = None, None
+            try:
+                total_val = 0
+                min_weight_list = []
+                for rule in self.rules:
+                    ver_lay = QHBoxLayout()
 
-                rule_val = 0
-                weight_list = []
-                for index, term in enumerate(rule.mf_rules.values()):
-                    if term[0] != "None":
-                        values = self.input_variables[index].mf_function_value[term[0]]
-                        weight = None
-                        var_ctrl = self.input_variables[index].variable_ctrl[term[0]]
-                        self.fig, self.ax = FuzzyVariableVisualizer(var_ctrl).view()
-                        self.ax.get_legend().remove()
-                        self.fig.set_figwidth(2)
-                        self.fig.set_figheight(2)
-                        input = self.input_variables[index].input
-                        self.ax.add_artist(lines.Line2D([input, input], [0, 1], color="red"))
-                        self.ax.set_xticklabels([])
-                        self.ax.yaxis.set_label_text("")
-                        # self.ax.xaxis.set_label_text("")
-                        self.fig.patch.set_alpha(0.0)
-                        self.fig.tight_layout(pad=2, w_pad=2, h_pad=2)
-                        graph = InputGraph(self.fig)
-                        ver_lay.addWidget(graph)
+                    rule_val = 0
+                    weight_list = []
+                    for index, term in enumerate(rule.mf_rules.values()):
+                        if term[0] != "None":
+                            values = self.input_variables[index].mf_function_value[term[0]]
+                            weight = None
+                            var_ctrl = self.input_variables[index].variable_ctrl[term[0]]
+                            self.fig, self.ax = FuzzyVariableVisualizer(var_ctrl).view()
+                            self.ax.get_legend().remove()
+                            self.fig.set_figwidth(2)
+                            self.fig.set_figheight(2)
+                            input = self.input_variables[index].input
+                            self.ax.add_artist(lines.Line2D([input, input], [0, 1], color="red"))
+                            self.ax.set_xticklabels([])
+                            self.ax.yaxis.set_label_text("")
+                            # self.ax.xaxis.set_label_text("")
+                            self.fig.patch.set_alpha(0.0)
+                            self.fig.tight_layout(pad=2, w_pad=2, h_pad=2)
+                            graph = InputGraph(self.fig)
+                            ver_lay.addWidget(graph)
 
-                        if self.input_variables[index].function_type == "triangular":
-                            weight = self.trifunc(values[0], values[1], values[2], self.input_variables[index].input)
+                            if self.input_variables[index].function_type == "triangular":
+                                weight = self.trifunc(values[0], values[1], values[2],
+                                                      self.input_variables[index].input)
 
-                        elif self.input_variables[index].function_type == "trapezoidal":
-                            weight = self.trapfunc(values[0], values[1], values[2], values[3],
-                                                   self.input_variables[index].input)
-                        print("weight ", weight)
-                        weight_list.append(weight)
-                        rule_val += float(term[1]) * self.input_variables[index].input
-                        print("rule val ", rule_val)
-                  #  rule_val += rule.
-                min_weight = min(weight_list)
-                print("min weight", min_weight)
-                min_weight_list.append(min_weight)
-                total_val += min_weight * rule_val
-                print("total val ", total_val)
+                            elif self.input_variables[index].function_type == "trapezoidal":
+                                weight = self.trapfunc(values[0], values[1], values[2], values[3],
+                                                       self.input_variables[index].input)
+                            print("weight ", weight)
+                            weight_list.append(weight)
+                            rule_val += float(term[1]) * self.input_variables[index].input
+                            print("rule val ", rule_val)
+                    #  rule_val += rule.
+                    min_weight = min(weight_list)
+                    print("min weight", min_weight)
+                    min_weight_list.append(min_weight)
+                    total_val += min_weight * rule_val
+                    print("total val ", total_val)
 
-                ver_lay.addWidget(self.bar(min_weight))
-                self.res_lay.addLayout(ver_lay)
-                self.res_lay.update()
-            res = total_val / sum(min_weight_list)
-            result_content = "The result is {0:.2f}".format(res)
-            self.res_sug_ui.result_label.setText(result_content)
-            lwidget = QWidget()
-            lwidget.setLayout(self.res_lay)
-            self.res_sug_ui.graph_list.setWidget(lwidget)
-        except ZeroDivisionError as zeroErr:
-            self.res_sug_ui.result_label.setText("The result is 0")
+                    ver_lay.addWidget(self.bar(min_weight))
+                    self.res_lay.addLayout(ver_lay)
+                    self.res_lay.update()
+                res = total_val / sum(min_weight_list)
+                result_content = "The result is {0:.2f}".format(res)
+                self.res_sug_ui.result_label.setText(result_content)
+                lwidget = QWidget()
+                lwidget.setLayout(self.res_lay)
+                self.res_sug_ui.graph_list.setWidget(lwidget)
+            except ZeroDivisionError as zeroErr:
+                self.res_sug_ui.result_label.setText("The result is 0")
 
     def set_var_value(self):
         for index, var in enumerate(self.input_variables):

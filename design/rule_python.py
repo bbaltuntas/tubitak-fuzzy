@@ -109,7 +109,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.add_rule_button.setText(_translate("MainWindow", "Add Rule"))
-        self.update_button.setText(_translate("MainWindow", "Update"))
-        self.delete_button.setText(_translate("MainWindow", "Delete"))
+        self.add_rule_button.setText(_translate("MainWindow", "Ekle"))
+        self.update_button.setText(_translate("MainWindow", "Güncelle"))
+        self.delete_button.setText(_translate("MainWindow", "Sil"))
 

@@ -1,7 +1,8 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-from design.home_python import Ui_MainWindow as HomeWindow
-from screens.main_mamdani import MainScreen
+from design.fis_python import Ui_MainWindow as HomeWindow
+from screens.main_mamdani import MainScreen as MamdaniScreen
+from screens.main_sugeno import MainSugeno as SugenoScreen
 
 
 class HomeScreen(QMainWindow):
@@ -10,21 +11,14 @@ class HomeScreen(QMainWindow):
         self.home_ui = HomeWindow()
         self.home_ui.setupUi(self)
         self.setWindowTitle("Home")
-        style = """
-        QPushButton{
-        background-color: white;
-        border-style: outset;
-        border-width: 2px;
-        border-radius: 15px;
-        border-color: white;
-        padding:10px;
-        margin: 10px;
-        }
-        """
-        self.setStyleSheet(style)
 
-        self.home_ui.modul1.clicked.connect(self.modul1)
+        self.home_ui.mamdaniButton.clicked.connect(self.open_mamdani)
+        self.home_ui.sugenoButton.clicked.connect(self.open_sugeno)
 
-    def modul1(self):
-        self.mamdani = MainScreen()
+    def open_mamdani(self):
+        self.mamdani = MamdaniScreen()
         self.mamdani.show()
+
+    def open_sugeno(self):
+        self.sugeno = SugenoScreen()
+
