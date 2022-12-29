@@ -1,3 +1,5 @@
+import os
+
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from skfuzzy import control as ctrl
@@ -37,7 +39,7 @@ class MainScreen(QMainWindow):
         self.sugeno_w = None
         self.set_actions()
         self.to_language_key = None
-
+        self.desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
         # try:
         #     with open('../config.json', 'r') as f:
         #         self.config = json.load(f)
@@ -168,10 +170,10 @@ class MainScreen(QMainWindow):
 
         # self.ui.gridLayout.addWidget(button)
         self.ui.gridLayout.addWidget(
-            button,
-            int((length / 3)) + 1 if length % 3 != 0 else int(length / 3),
-            length % 3 if length % 3 != 0 else 3,
+            button
         )
+        """   int((length / 3)) + 1 if length % 3 != 0 else int(length / 3),
+            length % 3 if length % 3 != 0 else 3,"""
         self.ui.gridLayout.update()
 
     def add_output_variable(self):
@@ -277,28 +279,28 @@ class MainScreen(QMainWindow):
                     break
 
     def import_data(self):
-        filename, _ = QFileDialog.getOpenFileName(self, "Choose File", "", "Fuzzy Files (*.fis)")
+        filename, _ = QFileDialog.getOpenFileName(self, "Choose File", self.desktop, "Fuzzy Files (*.fis)")
         if filename:
-            try:
-                items = list(self.load_all(filename))
-                self.input_variables = items[0]
-                self.output_variables = items[1]
-                self.rules = items[2]
-                for i in range(len(self.rules)):
-                    self.rule_converter(i)
+            items = list(self.load_all(filename))
+            self.input_variables = items[0]
+            self.output_variables = items[1]
+            self.rules = items[2]
+            for i in range(len(self.rules)):
+                self.rule_converter(i)
 
-                for i in reversed(range(self.ui.gridLayout.count())):
-                    self.ui.gridLayout.itemAt(i).widget().setParent(None)
-                for index, var_inp in enumerate(self.input_variables):
-                    self.load_input_button(var_inp, index + 1)
+            for i in reversed(range(self.ui.gridLayout.count())):
+                self.ui.gridLayout.itemAt(i).widget().setParent(None)
+            for index, var_inp in enumerate(self.input_variables):
+                self.load_input_button(var_inp, index + 1)
 
-                for i in reversed(range(self.ui.output_layout.count())):
-                    self.ui.output_layout.itemAt(i).widget().setParent(None)
-                for var_out in self.output_variables:
-                    self.load_output_buttons(var_out)
-            except Exception as ex:
-                ErrorMessage("Import Error", "Error occurred during importing (Possibly unsupported file").show()
-                # print("Error during unpickling object (Possibly unsupported):", ex)
+            for i in reversed(range(self.ui.output_layout.count())):
+                self.ui.output_layout.itemAt(i).widget().setParent(None)
+            for var_out in self.output_variables:
+                self.load_output_buttons(var_out)
+            """except Exception as ex:
+                # ErrorMessage("Import Error", "Error occurred during importing (Possibly unsupported file").show()
+                print("Error during unpickling object (Possibly unsupported):", ex)
+"""
 
     def save_data(self):
         dirname, _ = QFileDialog.getSaveFileName(self, "Choose Directory", "data", "Python Files (*.fis)")
@@ -368,7 +370,9 @@ class MainScreen(QMainWindow):
 
     def rule_converter(self, index):
         rule = self.rules[index]
+        print(rule.antecedent_terms)
         input_mf_labels = []
+        var_list = []
         output_mf_labels = []
         if str(rule.antecedent).__contains__("AND"):
             operator = "and"
@@ -376,8 +380,10 @@ class MainScreen(QMainWindow):
             operator = "or"
 
         for var_inp in rule.antecedent_terms:
+            var_name = str(var_inp).split("[")[0]
             term_inp = str(var_inp).split("[")[1].split("]")[0]
             input_mf_labels.append(term_inp)
+            var_list.append(var_name)
 
         for rule_out in rule.consequent:
             term_out = str(rule_out).split("[")[1].split("]")[0]
@@ -386,19 +392,24 @@ class MainScreen(QMainWindow):
         if input_mf_labels[0] == "None":
             inp_rule = None
         else:
-            inp_rule = self.input_variables[0].variable_ctrl[input_mf_labels[0]]
+            ######
+            print(var_list)
+            var_index = self.find_var_index(var_list[0])
+            print(var_index)
+            inp_rule = self.input_variables[var_index].variable_ctrl[input_mf_labels[0]]
 
         for index_inp, element in enumerate(input_mf_labels[1:]):
             if element == "None":
                 pass
             else:
+                var_index = self.find_var_index(var_list[index_inp + 1])
                 if inp_rule is None:
-                    inp_rule = self.input_variables[index_inp + 1].variable_ctrl[element]
+                    inp_rule = self.input_variables[var_index].variable_ctrl[element]
                 else:
                     if operator == "and":
-                        inp_rule = inp_rule & self.input_variables[index_inp + 1].variable_ctrl[element]
+                        inp_rule = inp_rule & self.input_variables[var_index].variable_ctrl[element]
                     elif operator == "or":
-                        inp_rule = inp_rule | self.input_variables[index_inp + 1].variable_ctrl[element]
+                        inp_rule = inp_rule | self.input_variables[var_index].variable_ctrl[element]
 
         if output_mf_labels[0] == "None":
             output_rule = None
@@ -419,6 +430,11 @@ class MainScreen(QMainWindow):
             output_rule)
 
         self.rules[index] = rule
+
+    def find_var_index(self, name):
+        for index, var in enumerate(self.input_variables):
+            if var.name == name:
+                return index
 
     def calc_result(self):
         # brake0 = np.zeros_like(self.output_variables[0].variable)

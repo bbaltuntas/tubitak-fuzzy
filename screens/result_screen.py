@@ -6,7 +6,53 @@ from skfuzzy import control as ctrl
 from skfuzzy.control.visualization import FuzzyVariableVisualizer
 from design.result_python import Ui_MainWindow as InputWindow
 from error_message import ErrorMessage
-import matplotlib.lines as lines
+from PyQt5.QtCore import QObject, QThread, pyqtSignal
+
+
+class Worker(QObject):
+    def __init__(self, parent):
+        super().__init__()
+        self.parent = parent
+
+    finished = pyqtSignal()
+    progress = pyqtSignal(int)
+
+    def run(self):
+        # long running task
+        print("Başladı")
+        ver_lay = QVBoxLayout()
+        output_ctrl = ctrl.ControlSystem(self.parent.rules)
+        output = ctrl.ControlSystemSimulation(output_ctrl)
+        # TODO try catch ekle
+        for index in range(len(self.parent.input_variables)):
+            output.input[self.parent.input_variables[index].variable_ctrl.label] = self.parent.input_variables[
+                index].input
+
+        # Crunch the numbers
+        output.compute()
+        print("Bitti")
+        for i in reversed(range(self.parent.res_lay.count())):
+            self.parent.res_lay.itemAt(i).widget().setParent(None)
+        self.parent.fig, self.parent.ax = None, None
+        content = ""
+        for index in range(len(self.parent.output_variables)):
+            content = content + "The Result for {0} is {1:.2f} \n".format(self.parent.output_variables[index].name,
+                                                                          output.output[
+                                                                              self.parent.output_variables[
+                                                                                  index].name])
+            self.parent.res_ui.result_label.setText(content)
+            out_ctrl: ctrl.Consequent = self.parent.output_variables[index].variable_ctrl
+            self.parent.fig, self.parent.ax = FuzzyVariableVisualizer(out_ctrl).view(sim=output)
+
+            self.parent.fig.tight_layout(pad=3, w_pad=3, h_pad=3)
+            graph = InputGraph(self.parent.fig)
+            ver_lay.addWidget(graph)
+        widget = QWidget()
+        widget.setLayout(ver_lay)
+        self.parent.res_ui.graph_list.setWidget(widget)
+        # self.res_ui.graph_layout.addWidget(graph)
+        self.parent.res_lay.update()
+
 
 
 class ResultScreen(QMainWindow):
@@ -53,18 +99,21 @@ class ResultScreen(QMainWindow):
         # self.res_ui.input_list_widget.currentRowChanged.connect(self.show_var_value)
         # self.res_ui.var_value.returnPressed.connect(self.set_var_value)
 
-    def calc_fuzzy(self, button):
+    def calc_fuzzy(self):
         try:
+            # long running task
+            print("Başladı")
             ver_lay = QVBoxLayout()
             output_ctrl = ctrl.ControlSystem(self.rules)
             output = ctrl.ControlSystemSimulation(output_ctrl)
             # TODO try catch ekle
             for index in range(len(self.input_variables)):
-                output.input[self.input_variables[index].variable_ctrl.label] = self.input_variables[index].input
+                output.input[self.input_variables[index].variable_ctrl.label] = self.input_variables[
+                    index].input
 
             # Crunch the numbers
             output.compute()
-
+            print("Bitti")
             for i in reversed(range(self.res_lay.count())):
                 self.res_lay.itemAt(i).widget().setParent(None)
             self.fig, self.ax = None, None
@@ -86,6 +135,7 @@ class ResultScreen(QMainWindow):
             self.res_ui.graph_list.setWidget(widget)
             # self.res_ui.graph_layout.addWidget(graph)
             self.res_lay.update()
+
 
         except ValueError as err:
             ErrorMessage("Value Error", err.__str__()).show()

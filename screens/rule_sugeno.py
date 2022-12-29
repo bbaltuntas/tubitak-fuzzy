@@ -1,8 +1,11 @@
+import os
+
 from design.rule_sugeno_python import Ui_MainWindow as InputWindow
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QModelIndex
-import numpy as np
-from skfuzzy import control as ctrl
+import pandas
+import numpy
+import time
 from error_message import ErrorMessage
 
 
@@ -10,7 +13,7 @@ class Rule:
     def __init__(self, mf_rules, constant, content, operator, function_type):
         self.mf_rules = mf_rules
         # [["var1", "dusuk", 0], ["var2", "orta",2],["var2", "None"]] old
-        # "var1": ["dusuk",2] ,"var2":["None",0] new
+        # var1 : ["dusuk"]
         # self.parameters = parameters
         self.constant = constant
         self.content = content
@@ -27,7 +30,7 @@ class RuleSugeno(object):
         self.function_type = "linear"
         self.sug_rul_ui = InputWindow()
         self.sugenoRuleWin = QMainWindow()
-
+        self.desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
         self.sug_rul_ui.setupUi(self.sugenoRuleWin)
         self.sugenoRuleWin.show()
         self.sugenoRuleWin.setWindowTitle("Sugeno Rules")
@@ -44,15 +47,21 @@ class RuleSugeno(object):
         self.sug_rul_ui.rule_list.doubleClicked.connect(self.change_current_index)
         self.sug_rul_ui.operator_box.currentTextChanged.connect(self.set_operator)
         self.sug_rul_ui.function_type.currentTextChanged.connect(self.set_function_type)
+        self.sug_rul_ui.excelButton.triggered.connect(self.import_from_excel)
+        self.sug_rul_ui.clearAllButton.triggered.connect(self.clear_all_rules)
 
-    def create_rule(self):
+    def create_rule(self, mf_list=None, constant=None):
         term_list = dict()
 
         input_mf_values = []
-        for layout in self.sug_rul_ui.input_mf_frame_layout.children():
-            mf = layout.itemAt(1).widget().selectedItems()[0].text()
-            input_mf_values.append(mf)
-            # input_mf_values.append(layout.itemAt(1).widget().selectedItems()[0].text())
+
+        if mf_list is None:
+            for layout in self.sug_rul_ui.input_mf_frame_layout.children():
+                mf = layout.itemAt(1).widget().selectedItems()[0].text()
+                input_mf_values.append(mf)
+                # input_mf_values.append(layout.itemAt(1).widget().selectedItems()[0].text())
+        else:
+            input_mf_values = mf_list
 
         content = "IF "
         for index, var in enumerate(self.input_variables):
@@ -69,10 +78,15 @@ class RuleSugeno(object):
 
         content += "THEN Output is "
         try:
-            param_text = self.sug_rul_ui.param_line.text()
-            parameters = param_text.strip(" ").split(" ")
-            parameters = list(filter("".__ne__, parameters))
-            if self.function_type == "linear":
+            if constant is None:
+                param_text = self.sug_rul_ui.param_line.text()
+                parameters = param_text.strip(" ").split(" ")
+                parameters = list(filter("".__ne__, parameters))
+            else:
+                self.function_type = "constant"
+                parameters = constant
+
+            if self.function_type == "linear" and constant is None:
                 if len(parameters) != len(self.input_variables) + 1:
                     ErrorMessage("Parameter Error", "Enter {0} parameters".format(len(self.input_variables) + 1)).show()
                 else:
@@ -101,7 +115,6 @@ class RuleSugeno(object):
                     function = "{0}".format(const)
                     rule_content = "{0} {1}".format(content, function)
                     return Rule(term_list, const, rule_content, self.operator, self.function_type)
-
         except IndexError as index_err:
             ErrorMessage("Index Error",
                          "You should enter valid number of parameters!").show()
@@ -114,10 +127,48 @@ class RuleSugeno(object):
             self.sug_rul_ui.rule_list.addItem(item)
             self.sug_rul_ui.param_line.setText("")
 
+    def add_rules_from_excel(self, mf_lists, constants):
+        try:
+            for index, mf_list in enumerate(mf_lists):
+                rule = self.create_rule(mf_list, constants[index])
+                if rule is not None:
+                    self.rules.append(rule)
+                    item = QListWidgetItem(rule.content)
+                    self.sug_rul_ui.rule_list.addItem(item)
+                    self.sug_rul_ui.param_line.setText("")
+        except:
+            ErrorMessage("Hata", "Kuralları excelden yüklerken hata meydana geldi!")
+
+    def import_from_excel(self):
+        filename, _ = QFileDialog.getOpenFileName(self.sugenoRuleWin, "Choose File", self.desktop,
+                                                  "Excel Files (*.xlsx)")
+        if filename:
+            print(filename)
+            try:
+                start = time.time()
+                excel_data = pandas.read_excel(filename).to_numpy()
+                constants = excel_data[:, [-1]]
+                mf_lists = excel_data[:, [x for x in range(1, excel_data[0].size - 2)]]
+
+                # for line in excel_data:
+                #    print(line)
+                # for data in line:
+                # print(data)
+
+                self.add_rules_from_excel(mf_lists, constants)
+
+                print(time.time() - start)
+            except Exception as ex:
+                print("XXXX", ex)
+
     def delete_rule(self):
         selected_index = self.sug_rul_ui.rule_list.currentRow().__index__()
         self.rules.pop(selected_index)
         self.sug_rul_ui.rule_list.takeItem(selected_index)
+
+    def clear_all_rules(self):
+        self.rules.clear()
+        self.sug_rul_ui.rule_list.clear()
 
     def update_rule(self):
         selected_index = self.sug_rul_ui.rule_list.currentRow().__index__()

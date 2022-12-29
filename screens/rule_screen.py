@@ -1,3 +1,7 @@
+import os
+
+import pandas
+
 from design.rule_python import Ui_MainWindow as InputWindow
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QModelIndex
@@ -23,7 +27,7 @@ class RuleScreen(object):
         self.rules: list = rules
         self.rule_ui = InputWindow()
         self.inputWindow = QMainWindow()
-
+        self.desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
         self.rule_ui.setupUi(self.inputWindow)
         self.inputWindow.show()
         self.inputWindow.setWindowTitle("Mamdani Rules")
@@ -39,6 +43,8 @@ class RuleScreen(object):
         self.rule_ui.rule_list.doubleClicked.connect(self.change_current_index)
         self.rule_ui.delete_button.clicked.connect(self.delete_rule)
         self.rule_ui.update_button.clicked.connect(self.update_rule)
+        self.rule_ui.excelButton.triggered.connect(self.import_from_excel)
+        self.rule_ui.clearAllButton.triggered.connect(self.clear_all_rules)
 
         self.rule_ui.operator_box.addItem("and")
         self.rule_ui.operator_box.addItem("or")
@@ -68,14 +74,20 @@ class RuleScreen(object):
     def set_operator(self, text):
         self.operator = text
 
-    def create_control_rule(self):
+    def create_control_rule(self, inp_mf_list=None, out_mf_list=None):
         input_mf_values = []
-        for layout in self.rule_ui.input_mf_frame_layout.children():
-            input_mf_values.append(layout.itemAt(1).widget().selectedItems()[0].text())
+        if inp_mf_list is None:
+            for layout in self.rule_ui.input_mf_frame_layout.children():
+                input_mf_values.append(layout.itemAt(1).widget().selectedItems()[0].text())
+        else:
+            input_mf_values = inp_mf_list
 
         output_mf_values = []
-        for layout in self.rule_ui.output_mf_frame_layout.children():
-            output_mf_values.append(layout.itemAt(1).widget().selectedItems()[0].text())
+        if out_mf_list is None:
+            for layout in self.rule_ui.output_mf_frame_layout.children():
+                output_mf_values.append(layout.itemAt(1).widget().selectedItems()[0].text())
+        else:
+            output_mf_values = out_mf_list
 
         ########
         if input_mf_values[0] == "None":
@@ -115,20 +127,57 @@ class RuleScreen(object):
 
         return rule
 
+    def import_from_excel(self):
+        filename, _ = QFileDialog.getOpenFileName(self.inputWindow, "Choose File", self.desktop,
+                                                  "Excel Files (*.xlsx)")
+        if filename:
+            print(filename)
+            try:
+                excel_data = pandas.read_excel(filename).to_numpy()
+                input_mf_lists = excel_data[:, [x for x in range(1, excel_data[0].size - 2)]]
+                output_mf_list = excel_data[:, [-2]]
+
+                # for line in excel_data:
+                #    print(line)
+                # for data in line:
+                # print(data)
+
+                self.add_rules_from_excel(input_mf_lists, output_mf_list)
+
+
+            except Exception as ex:
+                print("XXXX", ex)
+
+    def add_rules_from_excel(self, input_mf_lists, output_mf_list):
+
+        for index, mf_list in enumerate(input_mf_lists):
+            rule = self.create_control_rule(mf_list, output_mf_list[index])
+            if rule is not None:
+                rule_content = create_rule_content(rule)
+                self.rules.append(rule)
+                item = QListWidgetItem(rule_content)
+                self.rule_ui.rule_list.addItem(item)
+
     def add_rule(self):
-        rule = self.create_control_rule()
+        try:
+            rule = self.create_control_rule()
+            rule_content = create_rule_content(rule)
 
-        self.rules.append(rule)
+            self.rules.append(rule)
 
-        rule_content = create_rule_content(rule)
-
-        item = QListWidgetItem(rule_content)
-        self.rule_ui.rule_list.addItem(item)
+            item = QListWidgetItem(rule_content)
+            self.rule_ui.rule_list.addItem(item)
+        except:
+            ErrorMessage("Hata", "Kural oluştururken hata meydana geldi").show()
 
     def delete_rule(self):
         selected_index = self.rule_ui.rule_list.currentRow().__index__()
         self.rules.pop(selected_index)
         self.rule_ui.rule_list.takeItem(selected_index)
+
+    def clear_all_rules(self):
+        self.rules.clear()
+        self.rule_ui.rule_list.clear()
 
     def update_rule(self):
         selected_index = self.rule_ui.rule_list.currentRow().__index__()
