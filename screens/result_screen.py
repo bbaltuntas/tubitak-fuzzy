@@ -7,7 +7,7 @@ from skfuzzy.control.visualization import FuzzyVariableVisualizer
 from design.result_python import Ui_MainWindow as InputWindow
 from error_message import ErrorMessage
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
-
+import time
 
 class Worker(QObject):
     def __init__(self, parent):
@@ -52,7 +52,6 @@ class Worker(QObject):
         self.parent.res_ui.graph_list.setWidget(widget)
         # self.res_ui.graph_layout.addWidget(graph)
         self.parent.res_lay.update()
-
 
 
 class ResultScreen(QMainWindow):
@@ -104,13 +103,18 @@ class ResultScreen(QMainWindow):
             # long running task
             print("Başladı")
             ver_lay = QVBoxLayout()
-            output_ctrl = ctrl.ControlSystem(self.rules)
+            start = time.time()
+            output_ctrl = ctrl.ControlSystem(self.rules[0:50])
+            end = time.time()
+            print(end - start)
+            print("Rule bitti")
             output = ctrl.ControlSystemSimulation(output_ctrl)
+            print("outputctrl")
             # TODO try catch ekle
             for index in range(len(self.input_variables)):
                 output.input[self.input_variables[index].variable_ctrl.label] = self.input_variables[
                     index].input
-
+            print("for bitti")
             # Crunch the numbers
             output.compute()
             print("Bitti")
@@ -137,7 +141,7 @@ class ResultScreen(QMainWindow):
             self.res_lay.update()
 
 
-        except ValueError as err:
+        except Exception as err:
             ErrorMessage("Value Error", err.__str__()).show()
 
     def set_var_value(self):

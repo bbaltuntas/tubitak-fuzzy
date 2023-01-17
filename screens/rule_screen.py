@@ -124,7 +124,7 @@ class RuleScreen(object):
         rule = ctrl.Rule(
             inp_rule,
             output_rule)
-
+        print(rule, len(self.rules))
         return rule
 
     def import_from_excel(self):
@@ -134,8 +134,8 @@ class RuleScreen(object):
             print(filename)
             try:
                 excel_data = pandas.read_excel(filename).to_numpy()
-                input_mf_lists = excel_data[:, [x for x in range(1, excel_data[0].size - 2)]]
-                output_mf_list = excel_data[:, [-2]]
+                input_mf_lists = excel_data[:, [x for x in range(0, excel_data[0].size - 1)]]
+                output_mf_list = excel_data[:, [-1]]
 
                 # for line in excel_data:
                 #    print(line)

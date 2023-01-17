@@ -97,16 +97,16 @@ class ResultSugeno(object):
                             elif self.input_variables[index].function_type == "trapezoidal":
                                 weight = self.trapfunc(values[0], values[1], values[2], values[3],
                                                        self.input_variables[index].input)
-                            print("weight ", weight)
+                            # print("weight ", weight)
                             weight_list.append(weight)
                             rule_val += float(term[1]) * self.input_variables[index].input
-                            print("rule val ", rule_val)
+                            # print("rule val ", rule_val)
                     #  rule_val += rule.
                     min_weight = min(weight_list)
-                    print("min weight", min_weight)
+                    # print("min weight", min_weight)
                     min_weight_list.append(min_weight)
                     total_val += min_weight * rule_val
-                    print("total val ", total_val)
+                    # print("total val ", total_val)
 
                     ver_lay.addWidget(self.bar(min_weight))
                     self.res_lay.addLayout(ver_lay)
